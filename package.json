@@ -1,0 +1,28 @@
+{
+  "name": "sanscadre",
+  "version": "0.1.0",
+  "description": "Show your picture on a frameless window",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron-webpack dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ueokande/sanscadre.git"
+  },
+  "author": "Shin'ya Ueoka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ueokande/sanscadre/issues"
+  },
+  "homepage": "https://github.com/ueokande/sanscadre#readme",
+  "devDependencies": {
+    "electron": "^9.1.0",
+    "electron-builder": "^22.7.0",
+    "electron-webpack": "^2.8.2",
+    "webpack": "^4.43.0"
+  },
+  "dependencies": {
+    "typescript": "^3.9.7"
+  }
+}
