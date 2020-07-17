@@ -4,7 +4,9 @@
   "description": "Show your picture on a frameless window",
   "main": "index.js",
   "scripts": {
-    "start": "electron-webpack dev"
+    "start": "electron-webpack dev",
+    "lint": "eslint --ext '.js,.jsx,.ts,.tsx' src",
+    "lint:fix": "eslint --fix --ext '.js,.jsx,.ts,.tsx' src"
   },
   "repository": {
     "type": "git",
