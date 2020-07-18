@@ -3,8 +3,8 @@ import AppContext from "./AppContext";
 import styled from "styled-components";
 
 const Container = styled.div`
-  width: 640px;
-  height: 480px;
+  width: 100%;
+  height: 100%;
   font-size: 96px;
   text-align: center;
   background-color: #ff00ff;

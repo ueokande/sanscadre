@@ -1,6 +1,11 @@
 import React from "react";
 
-export type Action = { type: "NEXT_PAGE" } | { type: "PREV_PAGE" };
+export type Action =
+  | { type: "NEXT_PAGE" }
+  | { type: "PREV_PAGE" }
+  | { type: "FIRST_PAGE" }
+  | { type: "LAST_PAGE" }
+  | { type: "JUMP_TO_PAGE"; index: number };
 
 export interface State {
   index: number;
@@ -18,6 +23,21 @@ const AppReducer: React.Reducer<State, Action> = (state, action) => {
       return {
         ...state,
         index: Math.min(state.index + 1, state.pages.length - 1),
+      };
+    case "FIRST_PAGE":
+      return {
+        ...state,
+        index: 0,
+      };
+    case "LAST_PAGE":
+      return {
+        ...state,
+        index: state.pages.length - 1,
+      };
+    case "JUMP_TO_PAGE":
+      return {
+        ...state,
+        index: Math.max(Math.min(action.index, state.pages.length - 1), 0),
       };
     default:
       throw new Error("Unexpected action");
