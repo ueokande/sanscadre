@@ -8,15 +8,9 @@ const Container = styled.div`
   font-size: 96px;
   text-align: center;
   background-color: #ff00ff;
-`;
-
-const Img = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 `;
 
 const Screen = () => {
@@ -27,9 +21,9 @@ const Screen = () => {
   }
 
   return (
-    <Container>
-      <Img src={`file://${currentPage}`} />
-    </Container>
+    <Container
+      style={{ backgroundImage: `url(file://${currentPage}` }}
+    ></Container>
   );
 };
 export default Screen;
