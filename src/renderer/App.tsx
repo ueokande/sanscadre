@@ -8,7 +8,7 @@ import KeyHandler from "./KeyHandler";
 
 const initialState = {
   index: 0,
-  pages: ["hello", "world", "good", "morning"],
+  pages: [""],
 };
 
 const Layout = styled.div`
@@ -29,12 +29,28 @@ const LayoutMain = styled.div`
 
 const App = () => {
   const [state, dispatch] = React.useReducer(AppReducer, initialState);
+  const handleDrag = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const handleDrop = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    Array.from(e.dataTransfer.files).forEach((file) => {
+      dispatch({ type: "APPEND_PAGE", path: file.path });
+    });
+  };
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       <KeyHandler target={window.document.documentElement} />
       <Layout>
-        <LayoutSidebar>
+        <LayoutSidebar
+          onDragEnter={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        >
           <PageList />
         </LayoutSidebar>
         <LayoutMain>

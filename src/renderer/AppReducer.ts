@@ -5,7 +5,8 @@ export type Action =
   | { type: "PREV_PAGE" }
   | { type: "FIRST_PAGE" }
   | { type: "LAST_PAGE" }
-  | { type: "JUMP_TO_PAGE"; index: number };
+  | { type: "JUMP_TO_PAGE"; index: number }
+  | { type: "APPEND_PAGE"; path: string };
 
 export interface State {
   index: number;
@@ -38,6 +39,11 @@ const AppReducer: React.Reducer<State, Action> = (state, action) => {
       return {
         ...state,
         index: Math.max(Math.min(action.index, state.pages.length - 1), 0),
+      };
+    case "APPEND_PAGE":
+      return {
+        ...state,
+        pages: state.pages.concat([action.path]),
       };
     default:
       throw new Error("Unexpected action");

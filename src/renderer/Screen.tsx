@@ -10,6 +10,15 @@ const Container = styled.div`
   background-color: #ff00ff;
 `;
 
+const Img = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+`;
+
 const Screen = () => {
   const { state } = React.useContext(AppContext);
   const currentPage = state.pages[state.index];
@@ -19,7 +28,7 @@ const Screen = () => {
 
   return (
     <Container>
-      { currentPage }
+      <Img src={`file://${currentPage}`} />
     </Container>
   );
 };

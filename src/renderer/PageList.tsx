@@ -3,27 +3,28 @@ import styled from "styled-components";
 import AppContext from "./AppContext";
 import PageListItem from "./PageListItem";
 
-interface Props {
-}
-
 const Container = styled.ul`
   padding: 0;
   margin: 0;
   background-color: #eee;
+  min-width: 160px;
+  max-width: 160px;
 `;
 
-const PageList: React.FC<Props> = () => {
+const PageList: React.FC = () => {
   const { state, dispatch } = React.useContext(AppContext);
   const jump = (index: number) => () =>
     dispatch({ type: "JUMP_TO_PAGE", index });
+
   return (
     <Container>
-      {state.pages.map((text, index) => (
+      {state.pages.map((path, index) => (
         <PageListItem
           key={index}
           onClick={jump(index)}
           active={index === state.index}
-          label={text}
+          label={path}
+          src={`file://${path}`}
         />
       ))}
     </Container>

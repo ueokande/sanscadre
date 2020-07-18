@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow } from "electron";
 import * as path from "path";
 import { format as formatUrl } from "url";
 
@@ -8,7 +8,7 @@ let mainWindow: BrowserWindow | null;
 
 function createMainWindow() {
   const window = new BrowserWindow({
-    webPreferences: { nodeIntegration: true },
+    webPreferences: { nodeIntegration: true, webSecurity: false },
   });
 
   if (isDevelopment) {
@@ -55,4 +55,11 @@ app.on("activate", () => {
 
 app.on("ready", () => {
   mainWindow = createMainWindow();
+});
+
+app.whenReady().then(() => {
+  protocol.registerFileProtocol("file", (request, callback) => {
+    const pathname = decodeURI(request.url.replace("file:///", ""));
+    callback(pathname);
+  });
 });

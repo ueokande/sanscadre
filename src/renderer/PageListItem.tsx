@@ -5,11 +5,10 @@ interface Props {
   active: boolean;
   label: string;
   onClick: () => void;
+  src: string;
 }
 
 const Container = styled.li`
-  width: 160px;
-  height: 90px;
   padding: 0;
   margin: 16px;
   list-style: none;
@@ -18,12 +17,24 @@ const Container = styled.li`
   user-select: none;
 `;
 
-const PageListItem: React.FC<Props> = ({ active, label, onClick }: Props) => {
+const Img = styled.img`
+  min-height: 90px;
+  max-height: 90px;
+  min-width: 160px;
+  max-width: 160px;
+`;
+
+const PageListItem: React.FC<Props> = ({
+  active,
+  label,
+  src,
+  onClick,
+}: Props) => {
   const highlightStyle = active ? { boxShadow: "0 0 0 10px #c5c5c5" } : {};
 
   return (
     <Container style={highlightStyle} onClick={onClick}>
-      {label}
+      <Img alt={label} src={src} />
     </Container>
   );
 };
