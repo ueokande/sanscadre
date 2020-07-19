@@ -3,18 +3,22 @@ import styled from "styled-components";
 
 interface Props {
   active: boolean;
+  index: number;
   label: string;
-  onClick: () => void;
   src: string;
 }
 
 const Container = styled.li`
-  padding: 0;
-  margin: 16px;
+  margin: 0;
+  padding: 8px 12px;
   list-style: none;
   cursor: default;
-  background-color: white;
   user-select: none;
+  text-align: right;
+`;
+
+const PageNumber = styled.span`
+  font-family: helvetica, sans-serif;
 `;
 
 const Img = styled.img`
@@ -26,14 +30,15 @@ const Img = styled.img`
 
 const PageListItem: React.FC<Props> = ({
   active,
+  index,
   label,
   src,
-  onClick,
 }: Props) => {
-  const highlightStyle = active ? { boxShadow: "0 0 0 10px #c5c5c5" } : {};
+  const highlightStyle = active ? { backgroundColor: "lightgray" } : {};
 
   return (
-    <Container style={highlightStyle} onClick={onClick}>
+    <Container style={highlightStyle}>
+      <PageNumber>{index + 1}</PageNumber>
       <Img alt={label} src={src} />
     </Container>
   );

@@ -6,7 +6,7 @@ import Screen from "./Screen";
 import PageList from "./PageList";
 import KeyHandler from "./KeyHandler";
 
-const initialState = {
+export const initialState = {
   index: 0,
   pages: [""],
 };
@@ -29,28 +29,11 @@ const LayoutMain = styled.div`
 
 const App = () => {
   const [state, dispatch] = React.useReducer(AppReducer, initialState);
-  const handleDrag = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-  const handleDrop = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    Array.from(e.dataTransfer.files).forEach((file) => {
-      dispatch({ type: "APPEND_PAGE", path: file.path });
-    });
-  };
-
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       <KeyHandler target={window.document.documentElement} />
       <Layout>
-        <LayoutSidebar
-          onDragEnter={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
+        <LayoutSidebar>
           <PageList />
         </LayoutSidebar>
         <LayoutMain>

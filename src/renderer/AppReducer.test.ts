@@ -1,0 +1,139 @@
+import AppReducer from "./AppReducer";
+
+describe("PREV_PAGE action", () => {
+  test("jumps to a previous page", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "PREV_PAGE" }
+    );
+    expect(state.index).toEqual(2);
+  });
+
+  test("stands at first page", () => {
+    const state = AppReducer(
+      { index: 0, pages: "abcdefg".split("") },
+      { type: "PREV_PAGE" }
+    );
+    expect(state.index).toEqual(0);
+  });
+});
+
+describe("NEXT_PAGE action", () => {
+  test("jumps to a next page", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "NEXT_PAGE" }
+    );
+    expect(state.index).toEqual(4);
+  });
+
+  test("stands at last page", () => {
+    const state = AppReducer(
+      { index: 6, pages: "abcdefg".split("") },
+      { type: "NEXT_PAGE" }
+    );
+    expect(state.index).toEqual(6);
+  });
+});
+
+describe("FIRST_PAGE action", () => {
+  test("jumps to a first page", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "FIRST_PAGE" }
+    );
+    expect(state.index).toEqual(0);
+  });
+});
+
+describe("LAST_PAGE action", () => {
+  test("jumps to a first page", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "LAST_PAGE" }
+    );
+    expect(state.index).toEqual(6);
+  });
+});
+
+describe("JUMP_TO_PAGE action", () => {
+  test("jumps to a specified page", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "JUMP_TO_PAGE", index: 5 }
+    );
+    expect(state.index).toEqual(5);
+  });
+
+  test("jumps to a specified page with pages", () => {
+    let state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "JUMP_TO_PAGE", index: -1 }
+    );
+    expect(state.index).toEqual(0);
+
+    state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "JUMP_TO_PAGE", index: 100 }
+    );
+    expect(state.index).toEqual(6);
+  });
+});
+
+describe("APPEND_PAGE action", () => {
+  test("appends a page to the last", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "APPEND_PAGE", path: "z" }
+    );
+    expect(state.pages).toEqual("abcdefgz".split(""));
+  });
+});
+
+describe("MOVE_PAGE action", () => {
+  test("moves a pages backward", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "MOVE_PAGE", targetIndex: 3, insertBefore: 2 }
+    );
+    expect(state.pages).toEqual("abdcefg".split(""));
+  });
+
+  test("moves a pages into first", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "MOVE_PAGE", targetIndex: 2, insertBefore: 0 }
+    );
+    expect(state.pages).toEqual("cabdefg".split(""));
+  });
+
+  test("moves a pages forward", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "MOVE_PAGE", targetIndex: 2, insertBefore: 4 }
+    );
+    expect(state.pages).toEqual("abdcefg".split(""));
+  });
+
+  test("moves a pages into last", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "MOVE_PAGE", targetIndex: 2, insertBefore: 7 }
+    );
+    expect(state.pages).toEqual("abdefgc".split(""));
+  });
+
+  test("moves a page to the same position", () => {
+    let state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "MOVE_PAGE", targetIndex: 3, insertBefore: 3 }
+    );
+    expect(state.pages).toEqual("abcdefg".split(""));
+
+    state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "MOVE_PAGE", targetIndex: 3, insertBefore: 4 }
+    );
+    expect(state.pages).toEqual("abcdefg".split(""));
+  });
+});
