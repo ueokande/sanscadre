@@ -93,26 +93,29 @@ describe("APPEND_PAGE action", () => {
 describe("MOVE_PAGE action", () => {
   test("moves a pages backward", () => {
     const state = AppReducer(
-      { index: 3, pages: "abcdefg".split("") },
+      { index: 2, pages: "abcdefg".split("") },
       { type: "MOVE_PAGE", targetIndex: 3, insertBefore: 2 }
     );
     expect(state.pages).toEqual("abdcefg".split(""));
+    expect(state.index).toEqual(3);
   });
 
   test("moves a pages into first", () => {
     const state = AppReducer(
-      { index: 3, pages: "abcdefg".split("") },
+      { index: 1, pages: "abcdefg".split("") },
       { type: "MOVE_PAGE", targetIndex: 2, insertBefore: 0 }
     );
     expect(state.pages).toEqual("cabdefg".split(""));
+    expect(state.index).toEqual(2);
   });
 
   test("moves a pages forward", () => {
     const state = AppReducer(
-      { index: 3, pages: "abcdefg".split("") },
+      { index: 2, pages: "abcdefg".split("") },
       { type: "MOVE_PAGE", targetIndex: 2, insertBefore: 4 }
     );
     expect(state.pages).toEqual("abdcefg".split(""));
+    expect(state.index).toEqual(3);
   });
 
   test("moves a pages into last", () => {
@@ -121,6 +124,7 @@ describe("MOVE_PAGE action", () => {
       { type: "MOVE_PAGE", targetIndex: 2, insertBefore: 7 }
     );
     expect(state.pages).toEqual("abdefgc".split(""));
+    expect(state.index).toEqual(2);
   });
 
   test("moves a page to the same position", () => {
@@ -129,11 +133,13 @@ describe("MOVE_PAGE action", () => {
       { type: "MOVE_PAGE", targetIndex: 3, insertBefore: 3 }
     );
     expect(state.pages).toEqual("abcdefg".split(""));
+    expect(state.index).toEqual(3);
 
     state = AppReducer(
-      { index: 3, pages: "abcdefg".split("") },
+      { index: 4, pages: "abcdefg".split("") },
       { type: "MOVE_PAGE", targetIndex: 3, insertBefore: 4 }
     );
     expect(state.pages).toEqual("abcdefg".split(""));
+    expect(state.index).toEqual(4);
   });
 });

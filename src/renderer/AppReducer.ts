@@ -49,6 +49,25 @@ const AppReducer: React.Reducer<State, Action> = (state, action) => {
     case "MOVE_PAGE":
       return {
         ...state,
+        index: (() => {
+          if (action.targetIndex === state.index) {
+            if (action.targetIndex < action.insertBefore) {
+              return action.insertBefore - 1;
+            } else {
+              return action.insertBefore;
+            }
+          } else if (
+            state.index < Math.min(action.targetIndex, action.insertBefore) ||
+            state.index > Math.max(action.targetIndex, action.insertBefore) - 1
+          ) {
+            return state.index;
+          } else if (action.targetIndex < action.insertBefore) {
+            return state.index - 1;
+          } else if (action.targetIndex > action.insertBefore) {
+            return state.index + 1;
+          }
+          return state.index;
+        })(),
         pages: (() => {
           const a = state.pages;
           if (action.targetIndex < action.insertBefore) {
