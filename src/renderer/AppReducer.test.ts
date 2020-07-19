@@ -143,3 +143,46 @@ describe("MOVE_PAGE action", () => {
     expect(state.index).toEqual(4);
   });
 });
+
+describe("DELETE_PAGE action", () => {
+  test("delete a page", () => {
+    const state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "DELETE_PAGE", index: 3 }
+    );
+    expect(state.pages).toEqual("abcefg".split(""));
+    expect(state.index).toEqual(3);
+  });
+
+  test("delete a first page", () => {
+    let state = AppReducer(
+      { index: 0, pages: "abcdefg".split("") },
+      { type: "DELETE_PAGE", index: 0 }
+    );
+    expect(state.pages).toEqual("bcdefg".split(""));
+    expect(state.index).toEqual(0);
+
+    state = AppReducer(
+      { index: 3, pages: "abcdefg".split("") },
+      { type: "DELETE_PAGE", index: 0 }
+    );
+    expect(state.pages).toEqual("bcdefg".split(""));
+    expect(state.index).toEqual(2);
+  });
+
+  test("delete a last page", () => {
+    let state = AppReducer(
+      { index: 0, pages: "abcdefg".split("") },
+      { type: "DELETE_PAGE", index: 6 }
+    );
+    expect(state.pages).toEqual("abcdef".split(""));
+    expect(state.index).toEqual(0);
+
+    state = AppReducer(
+      { index: 6, pages: "abcdefg".split("") },
+      { type: "DELETE_PAGE", index: 6 }
+    );
+    expect(state.pages).toEqual("abcdef".split(""));
+    expect(state.index).toEqual(5);
+  });
+});

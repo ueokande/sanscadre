@@ -6,7 +6,12 @@ interface Props {
 }
 
 const KeyHandler: React.FC<Props> = ({ target }: Props) => {
-  const { dispatch } = React.useContext(AppContext);
+  const { state, dispatch } = React.useContext(AppContext);
+  const stateRef = React.useRef(state);
+  React.useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   React.useEffect(() => {
     target.addEventListener("keydown", (e) => {
       switch (e.key) {
@@ -23,6 +28,10 @@ const KeyHandler: React.FC<Props> = ({ target }: Props) => {
           return;
         case "End":
           dispatch({ type: "LAST_PAGE" });
+          return;
+        case "Delete":
+        case "Backspace":
+          dispatch({ type: "DELETE_PAGE", index: stateRef.current.index });
           return;
       }
     });

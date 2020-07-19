@@ -34,7 +34,7 @@ const PageListItem: React.FC<Props> = ({
   label,
   src,
 }: Props) => {
-  const highlightStyle = active ? { backgroundColor: "lightgray" } : {};
+  const highlightStyle = active ? { backgroundColor: "#377cf1" } : {};
 
   return (
     <Container style={highlightStyle}>

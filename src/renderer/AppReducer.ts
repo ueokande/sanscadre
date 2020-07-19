@@ -7,7 +7,8 @@ export type Action =
   | { type: "LAST_PAGE" }
   | { type: "JUMP_TO_PAGE"; index: number }
   | { type: "APPEND_PAGE"; path: string }
-  | { type: "MOVE_PAGE"; targetIndex: number; insertBefore: number };
+  | { type: "MOVE_PAGE"; targetIndex: number; insertBefore: number }
+  | { type: "DELETE_PAGE"; index: number };
 
 export interface State {
   index: number;
@@ -88,6 +89,21 @@ const AppReducer: React.Reducer<State, Action> = (state, action) => {
               );
           }
           return a;
+        })(),
+      };
+    case "DELETE_PAGE":
+      console.log("action.index", action);
+      return {
+        ...state,
+        pages: state.pages
+          .slice(0, action.index)
+          .concat(state.pages.slice(action.index + 1)),
+        index: (() => {
+          if (state.index <= action.index) {
+            return Math.min(state.pages.length - 2, state.index);
+          } else {
+            return state.index - 1;
+          }
         })(),
       };
     default:
