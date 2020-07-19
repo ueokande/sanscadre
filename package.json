@@ -6,7 +6,9 @@
   "scripts": {
     "start": "electron-webpack dev",
     "lint": "eslint --ext '.js,.jsx,.ts,.tsx' src",
-    "lint:fix": "eslint --fix --ext '.js,.jsx,.ts,.tsx' src"
+    "lint:fix": "eslint --fix --ext '.js,.jsx,.ts,.tsx' src",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
