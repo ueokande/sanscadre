@@ -19,13 +19,12 @@ const Container = styled.li`
 
 const PageNumber = styled.span`
   font-family: helvetica, sans-serif;
+  margin-right: 0.2rem;
 `;
 
 const Img = styled.img`
-  min-height: 90px;
-  max-height: 90px;
-  min-width: 160px;
-  max-width: 160px;
+  width: calc(100% - 1.5rem);
+  box-shadow: 0 0 4px #222;
 `;
 
 const PageListItem: React.FC<Props> = ({
