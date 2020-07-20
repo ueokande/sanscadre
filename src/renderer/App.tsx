@@ -8,6 +8,7 @@ import KeyHandler from "./KeyHandler";
 import VerticalSplitter from "./VerticalSplitter";
 import UIContext from "./UIContext";
 import UIReducer from "./UIReducer";
+import SidebarKnob from "./SidebarKnob";
 
 export const initialState = {
   index: 0,
@@ -46,11 +47,22 @@ const App = () => {
     }
   };
 
+  const [sidebarKnobOpacity, setSidebarKnobOpacity] = React.useState(0);
+  const showSidebarKnob = () => {
+    setSidebarKnobOpacity(1);
+  }
+  const hideSidebarKnob = () => {
+    setSidebarKnobOpacity(0);
+  }
+
   return (
     <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
         <KeyHandler target={window.document.documentElement} />
-        <Layout>
+        <Layout
+          onMouseEnter={showSidebarKnob}
+          onMouseLeave={hideSidebarKnob}
+        >
           <LayoutSidebar
             style={{
               display: uiState.showSidebar ? "block" : "none",
@@ -70,6 +82,7 @@ const App = () => {
           <LayoutMain>
             <Screen />
           </LayoutMain>
+          <SidebarKnob opacity={sidebarKnobOpacity}/>
         </Layout>
       </UIContext.Provider>
     </AppContext.Provider>
