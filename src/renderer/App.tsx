@@ -12,7 +12,7 @@ import SidebarKnob from "./SidebarKnob";
 
 export const initialState = {
   index: 0,
-  pages: [""],
+  pages: [],
 };
 
 const Layout = styled.div`
