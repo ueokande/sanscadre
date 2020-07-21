@@ -47,7 +47,9 @@ const PageList: React.FC = () => {
       });
       return;
     }
-    Array.from(e.dataTransfer.files).forEach((file) => {
+    Array.from(e.dataTransfer.files)
+      .filter((file) => file.type.startsWith("image/"))
+      .forEach((file) => {
       appDispatch({ type: "APPEND_PAGE", path: file.path });
     });
   };
