@@ -28,7 +28,7 @@ interface Props {
   opacity: number;
 }
 
-const SidebarKnob: React.FC<Props> = ({ opacity }:Props) => {
+const SidebarKnob: React.FC<Props> = ({ opacity }: Props) => {
   const { state, dispatch } = React.useContext(UIContext);
   const handleClick = () => {
     dispatch({ type: "SHOW_SIDEBAR", width: 128 });
@@ -36,7 +36,10 @@ const SidebarKnob: React.FC<Props> = ({ opacity }:Props) => {
 
   return (
     <Container
-      style={{ display: state.showSidebar ? "none" : "block", opacity: opacity }}
+      style={{
+        display: state.showSidebar ? "none" : "block",
+        opacity: opacity,
+      }}
       onClick={handleClick}
     >
       <FontAwesomeIcon icon={faChevronCircleRight} />

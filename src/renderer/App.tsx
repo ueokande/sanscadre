@@ -50,19 +50,16 @@ const App = () => {
   const [sidebarKnobOpacity, setSidebarKnobOpacity] = React.useState(0);
   const showSidebarKnob = () => {
     setSidebarKnobOpacity(1);
-  }
+  };
   const hideSidebarKnob = () => {
     setSidebarKnobOpacity(0);
-  }
+  };
 
   return (
     <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
         <KeyHandler target={window.document.documentElement} />
-        <Layout
-          onMouseEnter={showSidebarKnob}
-          onMouseLeave={hideSidebarKnob}
-        >
+        <Layout onMouseEnter={showSidebarKnob} onMouseLeave={hideSidebarKnob}>
           <LayoutSidebar
             style={{
               display: uiState.showSidebar ? "block" : "none",
@@ -82,7 +79,7 @@ const App = () => {
           <LayoutMain>
             <Screen />
           </LayoutMain>
-          <SidebarKnob opacity={sidebarKnobOpacity}/>
+          <SidebarKnob opacity={sidebarKnobOpacity} />
         </Layout>
       </UIContext.Provider>
     </AppContext.Provider>

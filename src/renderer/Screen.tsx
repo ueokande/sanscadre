@@ -13,17 +13,37 @@ const Container = styled.div`
   background-size: contain;
 `;
 
+const Img = styled.img`
+  pointer-event: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+`;
+
+const Video = styled.video`
+  pointer-event: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+`;
+
 const Screen = () => {
   const { state } = React.useContext(AppContext);
-  const currentPage = state.pages[state.index];
-  if (!currentPage) {
+  const page = state.pages[state.index];
+  if (!page) {
     return null;
   }
 
-  return (
-    <Container
-      style={{ backgroundImage: `url(file://${currentPage}` }}
-    ></Container>
-  );
+  const content = (() => {
+    if (page.type.startsWith("image/")) {
+      return <Img src={page.src} />;
+    } else if (page.type.startsWith("video/")) {
+      return <Video src={page.src} controls autoPlay />;
+    } else {
+      return null;
+    }
+  })();
+
+  return <Container>{content}</Container>;
 };
 export default Screen;

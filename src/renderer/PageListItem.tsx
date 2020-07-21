@@ -4,8 +4,8 @@ import styled from "styled-components";
 interface Props {
   active: boolean;
   index: number;
-  label: string;
   src: string;
+  type: string;
 }
 
 const Container = styled.li`
@@ -27,18 +27,27 @@ const Img = styled.img`
   box-shadow: 0 0 4px #222;
 `;
 
-const PageListItem: React.FC<Props> = ({
-  active,
-  index,
-  label,
-  src,
-}: Props) => {
+const Video = styled.video`
+  width: calc(100% - 1.5rem);
+  box-shadow: 0 0 4px #222;
+`;
+
+const PageListItem: React.FC<Props> = ({ active, index, src, type }: Props) => {
   const highlightStyle = active ? { backgroundColor: "#377cf1" } : {};
+  const content = (() => {
+    if (type.startsWith("image/")) {
+      return <Img src={src} />;
+    } else if (type.startsWith("video/")) {
+      return <Video src={src} />;
+    } else {
+      return null;
+    }
+  })();
 
   return (
     <Container style={highlightStyle}>
       <PageNumber>{index + 1}</PageNumber>
-      <Img alt={label} src={src} />
+      {content}
     </Container>
   );
 };

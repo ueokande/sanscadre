@@ -48,10 +48,17 @@ const PageList: React.FC = () => {
       return;
     }
     Array.from(e.dataTransfer.files)
-      .filter((file) => file.type.startsWith("image/"))
+      .filter(
+        (file) =>
+          file.type.startsWith("image/") || file.type.startsWith("video/")
+      )
       .forEach((file) => {
-      appDispatch({ type: "APPEND_PAGE", path: file.path });
-    });
+        appDispatch({
+          type: "APPEND_PAGE",
+          src: `file://${file.path}`,
+          contentType: file.type,
+        });
+      });
   };
 
   const isDragging = (index: number) =>
@@ -64,7 +71,7 @@ const PageList: React.FC = () => {
       onDrop={handleDrop}
       onDragOver={(e) => handleDragOver(e, appState.pages.length)}
     >
-      {appState.pages.map((path, index) => {
+      {appState.pages.map((page, index) => {
         let style: { [key: string]: string } = {
           transitionDuration: "0.25s",
           transitionProperty: "margin",
@@ -90,8 +97,8 @@ const PageList: React.FC = () => {
               key={index}
               index={index}
               active={index === appState.index}
-              label={path}
-              src={`file://${path}`}
+              src={page.src}
+              type={page.type}
             />
           </div>
         );

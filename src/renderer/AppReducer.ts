@@ -6,13 +6,18 @@ export type Action =
   | { type: "FIRST_PAGE" }
   | { type: "LAST_PAGE" }
   | { type: "JUMP_TO_PAGE"; index: number }
-  | { type: "APPEND_PAGE"; path: string }
+  | { type: "APPEND_PAGE"; src: string; contentType: string }
   | { type: "MOVE_PAGE"; targetIndex: number; insertBefore: number }
   | { type: "DELETE_PAGE"; index: number };
 
+type Page = {
+  src: string;
+  type: string;
+};
+
 export interface State {
   index: number;
-  pages: Array<string>;
+  pages: Array<Page>;
 }
 
 const AppReducer: React.Reducer<State, Action> = (state, action) => {
@@ -45,7 +50,9 @@ const AppReducer: React.Reducer<State, Action> = (state, action) => {
     case "APPEND_PAGE":
       return {
         ...state,
-        pages: state.pages.concat([action.path]),
+        pages: state.pages.concat([
+          { src: action.src, type: action.contentType },
+        ]),
       };
     case "MOVE_PAGE":
       return {
@@ -92,7 +99,6 @@ const AppReducer: React.Reducer<State, Action> = (state, action) => {
         })(),
       };
     case "DELETE_PAGE":
-      console.log("action.index", action);
       return {
         ...state,
         pages: state.pages
