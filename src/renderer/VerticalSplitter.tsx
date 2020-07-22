@@ -53,11 +53,16 @@ const VerticalSplitter: React.FC<Props> = ({
     }
   };
 
+  const handleDoubleClick = () => {
+    onResizeEnd(0);
+  };
+
   return (
     <Container
       ref={ref}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
+      onDoubleClick={handleDoubleClick}
       style={style}
     />
   );
