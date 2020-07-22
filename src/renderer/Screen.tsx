@@ -7,7 +7,7 @@ const Container = styled.div`
   height: 100%;
   font-size: 96px;
   text-align: center;
-  background-color: #ff00ff;
+  background-color: black;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -38,7 +38,7 @@ const Screen = () => {
     if (page.type.startsWith("image/")) {
       return <Img src={page.src} />;
     } else if (page.type.startsWith("video/")) {
-      return <Video src={page.src} controls autoPlay />;
+      return <Video src={page.src} controls autoPlay loop />;
     } else {
       return null;
     }
