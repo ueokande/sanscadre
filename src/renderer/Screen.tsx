@@ -11,10 +11,11 @@ const Container = styled.div`
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  user-select: none;
+  pointer-events: none;
 `;
 
 const Img = styled.img`
-  pointer-event: none;
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -39,9 +40,8 @@ const Screen = () => {
       return <Img src={page.src} />;
     } else if (page.type.startsWith("video/")) {
       return <Video src={page.src} controls autoPlay loop />;
-    } else {
-      return null;
     }
+    return null;
   })();
 
   return <Container>{content}</Container>;

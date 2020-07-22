@@ -8,7 +8,12 @@ let mainWindow: BrowserWindow | null;
 
 function createMainWindow() {
   const window = new BrowserWindow({
-    webPreferences: { nodeIntegration: true, webSecurity: false },
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false,
+    },
+    frame: false,
+    titleBarStyle: "customButtonsOnHover",
   });
 
   if (isDevelopment) {

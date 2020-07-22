@@ -8,6 +8,7 @@ import KeyHandler from "./KeyHandler";
 import VerticalSplitter from "./VerticalSplitter";
 import UIContext from "./UIContext";
 import UIReducer from "./UIReducer";
+import TitleBar from "./TitleBar";
 import SidebarKnob from "./SidebarKnob";
 
 export const initialState = {
@@ -29,6 +30,7 @@ const LayoutSidebar = styled.div`
 
 const LayoutMain = styled.div`
   flex-grow: 1;
+  -webkit-app-region: drag;
 `;
 
 const App = () => {
@@ -46,14 +48,24 @@ const App = () => {
       uiDispatch({ type: "HIDE_SIDEBAR" });
     }
   };
+  const handleKnobClicked = () => {
+    uiDispatch({ type: "SHOW_SIDEBAR", width: 128 });
+  };
 
-  const [sidebarKnobOpacity, setSidebarKnobOpacity] = React.useState(0);
+  const [showTitleBar, setShowTitleBar] = React.useState(false);
+  const [showKnob, setShowKnob] = React.useState(false);
   const showSidebarKnob = () => {
-    setSidebarKnobOpacity(1);
+    setShowKnob(true && !uiState.showSidebar);
+    setShowTitleBar(true);
   };
   const hideSidebarKnob = () => {
-    setSidebarKnobOpacity(0);
+    setShowKnob(false);
+    setShowTitleBar(false);
   };
+
+  React.useEffect(() => {
+    setShowKnob(true && !uiState.showSidebar);
+  }, [uiState]);
 
   return (
     <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
@@ -79,7 +91,8 @@ const App = () => {
           <LayoutMain>
             <Screen />
           </LayoutMain>
-          <SidebarKnob opacity={sidebarKnobOpacity} />
+          <TitleBar shown={showTitleBar} text={"Sanscadre"} />
+          <SidebarKnob shown={showKnob} onClick={handleKnobClicked} />
         </Layout>
       </UIContext.Provider>
     </AppContext.Provider>

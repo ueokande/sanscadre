@@ -1,10 +1,9 @@
 import React from "react";
-import UIContext from "./UIContext";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
 
-const Container = styled.div`
+const Container = styled.div<{ shown: boolean }>`
   position: absolute;
   left: 0;
   bottom: 8px;
@@ -20,28 +19,19 @@ const Container = styled.div`
   text-align: center;
   cursor: pointer;
 
+  opacity: ${({ shown }) => (shown ? "1.0" : "0.0")};
   transition-property: opacity;
   transition-duration: 0.5s;
 `;
 
 interface Props {
-  opacity: number;
+  shown: boolean;
+  onClick: (e: React.MouseEvent) => void;
 }
 
-const SidebarKnob: React.FC<Props> = ({ opacity }: Props) => {
-  const { state, dispatch } = React.useContext(UIContext);
-  const handleClick = () => {
-    dispatch({ type: "SHOW_SIDEBAR", width: 128 });
-  };
-
+const SidebarKnob: React.FC<Props> = ({ shown, onClick }: Props) => {
   return (
-    <Container
-      style={{
-        display: state.showSidebar ? "none" : "block",
-        opacity: opacity,
-      }}
-      onClick={handleClick}
-    >
+    <Container shown={shown} onClick={onClick}>
       <FontAwesomeIcon icon={faChevronCircleRight} />
     </Container>
   );
