@@ -16,7 +16,12 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "noEmitOnError": true,
+
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "inlineSources": true,
+    "sourceMap": true
   }
 }
