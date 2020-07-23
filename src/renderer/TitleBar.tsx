@@ -8,6 +8,7 @@ interface Props {
 
 const Container = styled.div<{ shown: boolean }>`
   position: absolute;
+  top: 0;
   width: 100%;
   line-height: 20px;
   font-family: system-ui;
