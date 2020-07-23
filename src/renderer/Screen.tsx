@@ -13,6 +13,7 @@ const Container = styled.div`
   background-size: contain;
   user-select: none;
   pointer-events: none;
+  -webkit-app-region: drag;
 `;
 
 const Img = styled.img`
