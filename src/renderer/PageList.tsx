@@ -39,26 +39,14 @@ const PageList: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (draggableState.dragging) {
-      appDispatch({
-        type: "MOVE_PAGE",
-        targetIndex: draggableState.draggingIndex,
-        insertBefore: draggableState.insertBefore,
-      });
+    if (!draggableState.dragging) {
       return;
     }
-    Array.from(e.dataTransfer.files)
-      .filter(
-        (file) =>
-          file.type.startsWith("image/") || file.type.startsWith("video/")
-      )
-      .forEach((file) => {
-        appDispatch({
-          type: "APPEND_PAGE",
-          src: `file://${file.path}`,
-          contentType: file.type,
-        });
-      });
+    appDispatch({
+      type: "MOVE_PAGE",
+      targetIndex: draggableState.draggingIndex,
+      insertBefore: draggableState.insertBefore,
+    });
   };
 
   const isDragging = (index: number) =>

@@ -48,8 +48,6 @@ const App = () => {
     }
   };
 
-  const containerRef = React.createRef<HTMLDivElement>();
-
   React.useEffect(() => {
     setShowKnob(true && !uiState.showSidebar);
   }, [uiState]);
@@ -58,7 +56,6 @@ const App = () => {
     <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
         <Container
-          ref={containerRef}
           onMouseEnter={showSidebarKnob}
           onMouseLeave={hideSidebarKnob}
         >

@@ -5,14 +5,9 @@ import styled from "styled-components";
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  font-size: 96px;
   text-align: center;
   background-color: black;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
   user-select: none;
-  pointer-events: none;
   -webkit-app-region: drag;
 `;
 
@@ -30,13 +25,13 @@ const Video = styled.video`
 `;
 
 const Screen = () => {
-  const { state } = React.useContext(AppContext);
-  const page = state.pages[state.index];
-  if (!page) {
-    return null;
-  }
+  const { state, dispatch } = React.useContext(AppContext);
 
   const content = (() => {
+    const page = state.pages[state.index];
+    if (!page) {
+      return null;
+    }
     if (page.type.startsWith("image/")) {
       return <Img src={page.src} />;
     } else if (page.type.startsWith("video/")) {
@@ -45,6 +40,37 @@ const Screen = () => {
     return null;
   })();
 
-  return <Container>{content}</Container>;
+  const preventDefaults = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const appendFile = (e: React.DragEvent) => {
+    preventDefaults(e);
+
+    Array.from(e.dataTransfer.files)
+      .filter(
+        (file) =>
+          file.type.startsWith("image/") || file.type.startsWith("video/")
+      )
+      .forEach((file) => {
+        dispatch({
+          type: "APPEND_PAGE",
+          src: `file://${file.path}`,
+          contentType: file.type,
+        });
+      });
+  };
+
+  return (
+    <Container
+      onDragStart={preventDefaults}
+      onDragOver={preventDefaults}
+      onDragLeave={preventDefaults}
+      onDrop={appendFile}
+    >
+      {content}
+    </Container>
+  );
 };
 export default Screen;
