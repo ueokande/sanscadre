@@ -8,7 +8,6 @@ const Container = styled.div`
   text-align: center;
   background-color: black;
   user-select: none;
-  -webkit-app-region: drag;
 `;
 
 const Img = styled.img`
