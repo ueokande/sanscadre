@@ -1,6 +1,8 @@
 import React from "react";
 import AppContext from "./AppContext";
 import styled from "styled-components";
+import * as ipc from "./ipc";
+import PDFReader from "./PDFReader";
 
 const Container = styled.div`
   width: 100%;
@@ -47,18 +49,28 @@ const Screen = () => {
   const appendFile = (e: React.DragEvent) => {
     preventDefaults(e);
 
-    Array.from(e.dataTransfer.files)
-      .filter(
-        (file) =>
-          file.type.startsWith("image/") || file.type.startsWith("video/")
-      )
-      .forEach((file) => {
+    Array.from(e.dataTransfer.files).forEach((file) => {
+      if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
         dispatch({
           type: "APPEND_PAGE",
           src: `file://${file.path}`,
           contentType: file.type,
         });
-      });
+      } else if (file.type === "application/pdf") {
+        (async () => {
+          const pdf = await PDFReader.loadURL(`file://${file.path}`);
+          pdf.eachPage(async (page) => {
+            const png = await page.getPNG({ width: 1920 });
+            const p = await ipc.saveTempFile(png, ".png");
+            dispatch({
+              type: "APPEND_PAGE",
+              src: `file://${p}`,
+              contentType: "image/png",
+            });
+          });
+        })();
+      }
+    });
   };
 
   return (
