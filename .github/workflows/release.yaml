@@ -1,8 +1,14 @@
-name: Build and test
-on: push
+name: Release archive
+on:
+  push:
+    tags:
+      - '*'
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  build-and-release:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
@@ -19,6 +25,7 @@ jobs:
           ${{ runner.os }}-yarn-
 
     - run: yarn install
-    - run: yarn lint
-    - run: yarn test
-    - run: yarn tsc --noEmit
+    - run: yarn electron-webpack
+    - run: yarn electron-builder --publish always
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

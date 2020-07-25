@@ -1,0 +1,16 @@
+win:
+  target: portable
+portable:
+  artifactName: "${productName}-${version}-${os}-${arch}-portable.${ext}"
+
+linux:
+  target: AppImage
+appImage:
+  artifactName: "${productName}-${version}-${os}-${arch}"
+
+mac:
+  target: dmg
+dmg:
+  artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
+
+asar: false
