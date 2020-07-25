@@ -29,10 +29,14 @@ const KeyHandler: React.FC<Props> = ({ target }: Props) => {
         case "End":
           dispatch({ type: "LAST_PAGE" });
           return;
-        case "Delete":
         case "Backspace":
-          dispatch({ type: "DELETE_PAGE", index: stateRef.current.index });
+        case "Delete":
+          dispatch({ type: "DELETE_SELECTED" });
           return;
+        case "a":
+          if (e.ctrlKey) {
+            dispatch({ type: "SELECT_ALL" });
+          }
       }
     });
   }, [target]);

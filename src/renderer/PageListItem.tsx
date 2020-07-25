@@ -3,18 +3,21 @@ import styled from "styled-components";
 
 interface Props {
   active: boolean;
+  selected: boolean;
   index: number;
   src: string;
   type: string;
 }
 
-const Container = styled.li`
+const Container = styled.li<{ active: boolean; selected: boolean }>`
   margin: 0;
   padding: 8px 12px;
   list-style: none;
   cursor: default;
   user-select: none;
   text-align: right;
+  background-color: ${({ active, selected }) =>
+    active ? "#377cf1" : selected ? "#c0d8f3" : "unset"};
 `;
 
 const PageNumber = styled.span`
@@ -32,8 +35,13 @@ const Video = styled.video`
   box-shadow: 0 0 4px #222;
 `;
 
-const PageListItem: React.FC<Props> = ({ active, index, src, type }: Props) => {
-  const highlightStyle = active ? { backgroundColor: "#377cf1" } : {};
+const PageListItem: React.FC<Props> = ({
+  active,
+  selected,
+  index,
+  src,
+  type,
+}: Props) => {
   const content = (() => {
     if (type.startsWith("image/")) {
       return <Img src={src} />;
@@ -45,7 +53,7 @@ const PageListItem: React.FC<Props> = ({ active, index, src, type }: Props) => {
   })();
 
   return (
-    <Container style={highlightStyle}>
+    <Container active={active} selected={selected}>
       <PageNumber>{index + 1}</PageNumber>
       {content}
     </Container>

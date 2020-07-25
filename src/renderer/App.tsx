@@ -17,7 +17,8 @@ const Container = styled.div`
 `;
 
 export const initialState = {
-  index: 0,
+  active: 0,
+  selected: new Set<number>(),
   pages: [],
 };
 

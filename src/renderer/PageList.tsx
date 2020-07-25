@@ -21,8 +21,16 @@ const PageList: React.FC = () => {
     initialState
   );
 
-  const jump = (index: number) => () =>
-    appDispatch({ type: "JUMP_TO_PAGE", index });
+  const select = (e: React.MouseEvent, index: number) => {
+    const isMac = navigator.platform.startsWith("Mac");
+    if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
+      appDispatch({ type: "TOGGLE_SELECTED", index });
+    } else if (e.shiftKey) {
+      appDispatch({ type: "SELECT_RANGE", end: index });
+    } else {
+      appDispatch({ type: "JUMP_TO_PAGE", index });
+    }
+  };
 
   const dragStart = (index: number) => {
     draggableDispatch({ type: "DRAG_START", index });
@@ -44,7 +52,6 @@ const PageList: React.FC = () => {
     }
     appDispatch({
       type: "MOVE_PAGE",
-      targetIndex: draggableState.draggingIndex,
       insertBefore: draggableState.insertBefore,
     });
   };
@@ -75,7 +82,7 @@ const PageList: React.FC = () => {
           <div
             draggable
             key={index}
-            onClick={jump(index)}
+            onMouseDown={(e) => select(e, index)}
             onDragStart={() => dragStart(index)}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragEnd={() => dragEnd()}
@@ -84,7 +91,8 @@ const PageList: React.FC = () => {
             <PageListItem
               key={index}
               index={index}
-              active={index === appState.index}
+              active={index === appState.active}
+              selected={appState.selected.has(index)}
               src={page.src}
               type={page.type}
             />

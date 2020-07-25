@@ -29,7 +29,7 @@ const Screen = () => {
   const { state, dispatch } = React.useContext(AppContext);
 
   const content = (() => {
-    const page = state.pages[state.index];
+    const page = state.pages[state.active];
     if (!page) {
       return null;
     }
