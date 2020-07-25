@@ -6,9 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 export default class TempDir {
   private constructor(private dir: string) {}
 
-  static async create(): Promise<TempDir> {
+  static create(): TempDir {
     const prefix = path.join(os.tmpdir(), "sanscadre-");
-    const dir = await fs.promises.mkdtemp(prefix);
+    const dir = fs.mkdtempSync(prefix);
     return new TempDir(dir);
   }
 

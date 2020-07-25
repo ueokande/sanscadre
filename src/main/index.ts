@@ -7,11 +7,7 @@ import TempDir from "./TempDir";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 let mainWindow: BrowserWindow | null;
-let tempdir: TempDir | null;
-
-TempDir.create().then((d) => {
-  tempdir = d;
-});
+const tempdir = TempDir.create();
 
 function createMainWindow() {
   const window = new BrowserWindow({
@@ -70,7 +66,7 @@ app.on("ready", () => {
 });
 
 app.on("will-quit", () => {
-  tempdir!.cleanup();
+  tempdir.cleanup();
 });
 
 app.whenReady().then(() => {
@@ -81,7 +77,7 @@ app.whenReady().then(() => {
 });
 
 ipcMain.handle("save-temp-file", async (event, content, suffix) => {
-  const p = tempdir!.createPath(suffix);
+  const p = tempdir.createPath(suffix);
   await fs.promises.writeFile(p, content);
   return p;
 });
