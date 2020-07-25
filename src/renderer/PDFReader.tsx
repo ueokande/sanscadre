@@ -58,7 +58,6 @@ export class PDFPage {
       scale = opts.width / viewport.width;
       width = opts.width;
       height = opts.width / rate;
-      console.log(viewport.width, viewport.height, viewport.scale);
     } else if (opts.height !== undefined) {
       scale = opts.height / viewport.height;
       width = opts.height * rate;
