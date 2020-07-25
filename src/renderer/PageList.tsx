@@ -10,6 +10,8 @@ const Container = styled.ul`
   margin: 0;
   background-color: #eee;
   min-height: 100%;
+  height: 100%;
+  overflow-y: auto;
 `;
 
 const PageList: React.FC = () => {
@@ -61,6 +63,14 @@ const PageList: React.FC = () => {
   const isOver = (index: number) =>
     draggableState.dragging && draggableState.insertBefore === index;
 
+  const activeItem = React.createRef<HTMLDivElement>();
+
+  React.useEffect(() => {
+    activeItem.current?.scrollIntoView({
+      block: "nearest",
+    });
+  }, [appState]);
+
   return (
     <Container
       onDrop={handleDrop}
@@ -81,6 +91,7 @@ const PageList: React.FC = () => {
         return (
           <div
             draggable
+            ref={index === appState.active ? activeItem : null}
             key={index}
             onMouseDown={(e) => select(e, index)}
             onDragStart={() => dragStart(index)}

@@ -12,7 +12,6 @@ const LeftContainer = styled.div<{ width: number; shown: boolean }>`
   flex-grow: 0;
   max-width: ${({ width }) => width + "px"};
   min-width: ${({ width }) => width + "px"};
-  overflow-y: auto;
 `;
 const RightContainer = styled.div`
   flex-grow: 1;
