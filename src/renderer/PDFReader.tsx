@@ -32,32 +32,41 @@ export class PDFPage {
     return this.serializer.serializeToString(dom);
   }
 
-  async getPNG({
-    scale,
-    width,
-    height,
-  }: {
-    scale?: number;
-    width?: number;
-    height?: number;
-  }): Promise<Buffer> {
+  async getPNG(
+    opts:
+      | {
+          width: number;
+          height?: number;
+        }
+      | {
+          width?: number;
+          height: number;
+        }
+      | {
+          scale: number;
+        }
+  ): Promise<Buffer> {
     let viewport = this.page.getViewport({ scale: 1 });
     const rate = viewport.width / viewport.height;
-    if (width === undefined && height === undefined) {
-      width = viewport.width * scale;
-      height = viewport.height * scale;
-    } else if (width !== undefined && height === undefined) {
-      height = width / rate;
-      scale = width / viewport.width;
-    } else if (width === undefined && height !== undefined) {
-      width = height * rate;
-      scale = height / viewport.height;
+
+    let { width, height, scale } = viewport;
+    if ("scale" in opts) {
+      width = viewport.width * opts.scale;
+      height = viewport.height * opts.scale;
+      scale = opts.scale;
+    } else if (opts.width !== undefined) {
+      scale = opts.width / viewport.width;
+      width = opts.width;
+      height = opts.width / rate;
+      console.log(viewport.width, viewport.height, viewport.scale);
+    } else if (opts.height !== undefined) {
+      scale = opts.height / viewport.height;
+      width = opts.height * rate;
+      height = opts.height;
     }
+
     viewport = this.page.getViewport({ scale });
 
-    if (width === undefined || height === undefined) {
-      throw new Error("invalid png size or scale");
-    }
     const canvas = createCanvas(width, height);
     await this.page.render({
       canvasContext: canvas.getContext("2d"),
