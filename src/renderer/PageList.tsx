@@ -4,6 +4,7 @@ import AppContext from "./AppContext";
 import PageListItem from "./PageListItem";
 import { initialState } from "./DraggableReducer";
 import DraggableReducer from "./DraggableReducer";
+import { isMac } from "./platform";
 
 const Container = styled.ul`
   padding: 0;
@@ -24,7 +25,6 @@ const PageList: React.FC = () => {
   );
 
   const select = (e: React.MouseEvent, index: number) => {
-    const isMac = navigator.platform.startsWith("Mac");
     if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
       appDispatch({ type: "TOGGLE_SELECTED", index });
     } else if (e.shiftKey) {

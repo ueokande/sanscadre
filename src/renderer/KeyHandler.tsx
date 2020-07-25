@@ -1,5 +1,6 @@
 import React from "react";
 import AppContext from "./AppContext";
+import { isMac } from "./platform";
 
 interface Props {
   target: HTMLElement;
@@ -34,7 +35,7 @@ const KeyHandler: React.FC<Props> = ({ target }: Props) => {
           dispatch({ type: "DELETE_SELECTED" });
           return;
         case "a":
-          if (e.ctrlKey) {
+          if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
             dispatch({ type: "SELECT_ALL" });
           }
       }
