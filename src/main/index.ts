@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, nativeImage } from "electron";
 import path from "path";
 import fs from "fs";
 import { format as formatUrl } from "url";
@@ -10,6 +10,16 @@ let mainWindow: BrowserWindow | null;
 const tempdir = TempDir.create();
 
 function createMainWindow() {
+  const image = nativeImage.createFromPath(
+    (() => {
+      if (isDevelopment) {
+        return path.join(__dirname, "..", "..", "build", "icon.png");
+      }
+      return path.join(__dirname, "build", "icon.png");
+    })()
+  );
+  image.setTemplateImage(true);
+
   const window = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
@@ -17,6 +27,7 @@ function createMainWindow() {
     },
     frame: false,
     titleBarStyle: "customButtonsOnHover",
+    icon: image,
   });
 
   if (isDevelopment) {
