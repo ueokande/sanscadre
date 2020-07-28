@@ -60,7 +60,6 @@ const App = () => {
           onMouseEnter={showSidebarKnob}
           onMouseLeave={hideSidebarKnob}
         >
-          <TitleBar shown={showTitleBar} text={"Sanscadre"} />
           <VerticalSplit
             left={<PageList />}
             right={<Screen />}
@@ -68,6 +67,7 @@ const App = () => {
             leftWidth={uiState.sidebarWidth}
             onResized={handleSidebarResized}
           />
+          <TitleBar shown={showTitleBar} text={"Sanscadre"} />
           <SidebarKnob shown={showKnob} onClick={handleKnobClicked} />
         </Container>
         <KeyHandler target={window.document.documentElement} />
