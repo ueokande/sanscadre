@@ -81,30 +81,7 @@ class Sortable extends React.Component<Props, State> {
     return (
       <div ref={this.container} onDragOver={(e) => this.dragOver(e)}>
         {React.Children.map(this.props.children, (child, index) => {
-          let offset = 0;
-          if (this.state.draggingIndex < this.state.insertBefore) {
-            if (index === this.state.draggingIndex) {
-              offset = this.elemRects
-                .slice(this.state.draggingIndex + 1, this.state.insertBefore)
-                .reduce((sum, rect) => sum + rect.height, 0);
-            } else if (
-              this.state.draggingIndex < index &&
-              index < this.state.insertBefore
-            ) {
-              offset = -this.elemRects[this.state.draggingIndex].height;
-            }
-          } else {
-            if (index === this.state.draggingIndex) {
-              offset = -this.elemRects
-                .slice(this.state.insertBefore, this.state.draggingIndex)
-                .reduce((sum, rect) => sum + rect.height, 0);
-            } else if (
-              this.state.insertBefore <= index &&
-              index < this.state.draggingIndex
-            ) {
-              offset = this.elemRects[this.state.draggingIndex].height;
-            }
-          }
+          const offset = this.offsetOfElement(index);
           return (
             <Item
               draggable
@@ -136,6 +113,28 @@ class Sortable extends React.Component<Props, State> {
     this.updateRects();
   }
 
+  private offsetOfElement(index: number) {
+    const { draggingIndex, insertBefore } = this.state;
+    if (draggingIndex < insertBefore) {
+      if (index === draggingIndex) {
+        return this.elemRects
+          .slice(draggingIndex + 1, insertBefore)
+          .reduce((sum, rect) => sum + rect.height, 0);
+      } else if (draggingIndex < index && index < insertBefore) {
+        return -this.elemRects[draggingIndex].height;
+      }
+    } else {
+      if (index === draggingIndex) {
+        return -this.elemRects
+          .slice(insertBefore, draggingIndex)
+          .reduce((sum, rect) => sum + rect.height, 0);
+      } else if (insertBefore <= index && index < draggingIndex) {
+        return this.elemRects[draggingIndex].height;
+      }
+    }
+    return 0;
+  }
+
   private dragOver(e: React.DragEvent<Element>) {
     if (this.props.children === null || this.container.current == null) {
       return;
@@ -145,17 +144,16 @@ class Sortable extends React.Component<Props, State> {
     const parentRect = this.container.current.getBoundingClientRect();
     const cursorY = e.clientY - parentRect.top;
 
-    const currentElemTop =
+    const elemenbTop =
       cursorY -
       (this.initCursorY - this.elemRects[this.state.draggingIndex].top);
     const currentElemBottom =
-      currentElemTop + this.elemRects[this.state.draggingIndex].height;
+      elemenbTop + this.elemRects[this.state.draggingIndex].height - 1;
+
     if (currentElemBottom > this.elemRects[this.elemRects.length - 1].bottom) {
       insertBefore = this.elemRects.length;
     } else if (this.initCursorY > cursorY) {
-      insertBefore = this.elemRects.findIndex(
-        ({ top }) => currentElemTop < top
-      );
+      insertBefore = this.elemRects.findIndex(({ top }) => elemenbTop < top);
     } else {
       const index = this.elemRects
         .concat([])
