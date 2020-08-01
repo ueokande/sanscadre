@@ -24,7 +24,7 @@ const Container = styled.div<{ shown: boolean }>`
   user-select: none;
 `;
 
-const TitleBar: React.FC<Props> = ({ shown, text }: Props) => {
+const TitleBar: React.FC<Props> = ({ shown, text }) => {
   return <Container shown={shown}>{text}</Container>;
 };
 

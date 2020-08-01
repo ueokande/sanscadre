@@ -29,7 +29,7 @@ interface Props {
   onClick: (e: React.MouseEvent) => void;
 }
 
-const SidebarKnob: React.FC<Props> = ({ shown, onClick }: Props) => {
+const SidebarKnob: React.FC<Props> = ({ shown, onClick }) => {
   return (
     <Container shown={shown} onClick={onClick}>
       <FontAwesomeIcon icon={faChevronCircleRight} />

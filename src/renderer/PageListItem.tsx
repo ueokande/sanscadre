@@ -41,7 +41,7 @@ const PageListItem: React.FC<Props> = ({
   index,
   src,
   type,
-}: Props) => {
+}) => {
   const content = (() => {
     if (type.startsWith("image/")) {
       return <Img src={src} />;

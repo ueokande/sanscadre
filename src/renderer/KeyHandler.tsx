@@ -6,7 +6,7 @@ interface Props {
   target: HTMLElement;
 }
 
-const KeyHandler: React.FC<Props> = ({ target }: Props) => {
+const KeyHandler: React.FC<Props> = ({ target }) => {
   const { state, dispatch } = React.useContext(AppContext);
   const stateRef = React.useRef(state);
   React.useEffect(() => {

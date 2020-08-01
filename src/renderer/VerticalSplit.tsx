@@ -41,7 +41,7 @@ const VerticalSplitter: React.FC<Props> = ({
   leftShown,
   leftWidth,
   onResized,
-}: Props) => {
+}) => {
   const [leftWidthOnResizing, setLeftWidthOnResizing] = React.useState(
     leftWidth
   );

@@ -1,37 +1,10 @@
 import React from "react";
 import Rect from "./Rect";
+import SortableItem from "./SortableItem";
 
 interface Props {
   onSortEnd?: (index: number, insertBefore: number) => void;
 }
-
-type MixedType = React.HTMLAttributes<HTMLElement> & {
-  dragging: boolean;
-  offset: number;
-};
-const Item: React.FC<MixedType> = ({
-  children,
-  dragging,
-  offset,
-  onDragStart,
-  onDragEnd,
-}: MixedType) => {
-  const style: React.CSSProperties = {};
-  if (dragging) {
-    style.transitionDuration = "0.1s";
-    style.transform = `translateY(${offset}px)`;
-  }
-  return (
-    <div
-      draggable
-      style={style}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-    >
-      {children}
-    </div>
-  );
-};
 
 interface State {
   dragging: boolean;
@@ -83,7 +56,7 @@ class Sortable extends React.Component<Props, State> {
         {React.Children.map(this.props.children, (child, index) => {
           const offset = this.offsetOfElement(index);
           return (
-            <Item
+            <SortableItem
               draggable
               dragging={this.state.dragging}
               offset={offset}
@@ -92,7 +65,7 @@ class Sortable extends React.Component<Props, State> {
               onDragEnd={this.dragEnd.bind(this)}
             >
               {child}
-            </Item>
+            </SortableItem>
           );
         })}
       </div>
