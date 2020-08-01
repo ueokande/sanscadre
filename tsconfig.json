@@ -23,5 +23,9 @@
     "noFallthroughCasesInSwitch": true,
     "inlineSources": true,
     "sourceMap": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
