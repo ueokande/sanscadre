@@ -8,6 +8,7 @@ import Sortable from "./Sortable";
 const Container = styled.ul`
   padding: 0;
   margin: 0;
+  margin-top: 20px;
   background-color: #eee;
   min-height: 100%;
   height: 100%;
