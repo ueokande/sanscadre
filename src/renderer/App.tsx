@@ -65,6 +65,7 @@ const App = () => {
             right={<Screen />}
             leftShown={uiState.showSidebar}
             leftWidth={uiState.sidebarWidth}
+            minLeftWidth={80}
             onResized={handleSidebarResized}
           />
           <TitleBar shown={showTitleBar} text={"Sanscadre"} />

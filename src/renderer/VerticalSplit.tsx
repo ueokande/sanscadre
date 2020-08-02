@@ -7,14 +7,24 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const LeftContainer = styled.div<{ width: number; shown: boolean }>`
+const LeftContainer = styled.div<{
+  shown: boolean;
+  width: number;
+  minWidth: number;
+}>`
   display: ${({ shown }) => (shown ? "block" : "none")};
   flex-grow: 0;
+  transition-duration: ${({ width, minWidth }) =>
+    width <= minWidth ? "0.1s" : "0"};
+  overflow-y: hidden;
   max-width: ${({ width }) => width + "px"};
   min-width: ${({ width }) => width + "px"};
 `;
 const RightContainer = styled.div`
   flex-grow: 1;
+`;
+const LeftContainerInner = styled.div<{ minWidth: number }>`
+  min-width: ${({ minWidth }) => minWidth + "px"};
 `;
 
 const Splitter = styled.div<{ shown: boolean }>`
@@ -32,6 +42,7 @@ interface Props {
   right: React.ReactNode;
   leftShown: boolean;
   leftWidth: number;
+  minLeftWidth: number;
   onResized: (width: number) => void;
 }
 
@@ -40,11 +51,10 @@ const VerticalSplitter: React.FC<Props> = ({
   right,
   leftShown,
   leftWidth,
+  minLeftWidth,
   onResized,
 }) => {
-  const [leftWidthOnResizing, setLeftWidthOnResizing] = React.useState(
-    leftWidth
-  );
+  const [tmpLeftWidth, setTmpLeftWidth] = React.useState(leftWidth);
   const [resizing, setResizing] = React.useState(false);
   const startResize = (e: React.PointerEvent) => {
     splitter.current?.setPointerCapture(e.pointerId);
@@ -53,7 +63,7 @@ const VerticalSplitter: React.FC<Props> = ({
   const stopResize = (e: React.PointerEvent) => {
     splitter.current?.releasePointerCapture(e.pointerId);
     setResizing(false);
-    onResized(leftWidthOnResizing);
+    onResized(tmpLeftWidth);
   };
   const doResize = (e: React.PointerEvent) => {
     if (!resizing) {
@@ -62,11 +72,14 @@ const VerticalSplitter: React.FC<Props> = ({
     if (container.current === null) {
       return;
     }
-    const width = Math.max(
+    let width = Math.max(
       e.pageX - container.current.getBoundingClientRect().left - 3,
       0
     );
-    setLeftWidthOnResizing(width);
+    if (width !== 0) {
+      width = Math.max(minLeftWidth, width);
+    }
+    setTmpLeftWidth(width);
   };
   const collapseLeft = () => {
     onResized(0);
@@ -76,13 +89,17 @@ const VerticalSplitter: React.FC<Props> = ({
   const splitter = React.createRef<HTMLDivElement>();
 
   React.useEffect(() => {
-    setLeftWidthOnResizing(leftWidth);
+    setTmpLeftWidth(leftWidth);
   }, [leftWidth]);
 
   return (
     <Container ref={container}>
-      <LeftContainer shown={leftShown} width={leftWidthOnResizing}>
-        {left}
+      <LeftContainer
+        shown={leftShown}
+        width={tmpLeftWidth}
+        minWidth={minLeftWidth}
+      >
+        <LeftContainerInner minWidth={minLeftWidth}>{left}</LeftContainerInner>
       </LeftContainer>
       <Splitter
         ref={splitter}
