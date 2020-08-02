@@ -89,7 +89,7 @@ const Screen = () => {
     if (page.type.startsWith("image/")) {
       return <Img src={page.src} />;
     } else if (page.type.startsWith("video/")) {
-      return <Video src={page.src} controls autoPlay loop />;
+      return <Video src={page.src} autoPlay loop />;
     }
     return null;
   })();
