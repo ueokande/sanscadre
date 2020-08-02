@@ -16,7 +16,8 @@ const LeftContainer = styled.div<{
   flex-grow: 0;
   transition-duration: ${({ width, minWidth }) =>
     width <= minWidth ? "0.1s" : "0"};
-  overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   max-width: ${({ width }) => width + "px"};
   min-width: ${({ width }) => width + "px"};
 `;

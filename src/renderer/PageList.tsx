@@ -12,7 +12,6 @@ const Container = styled.ul`
   background-color: #eee;
   min-height: 100%;
   height: 100%;
-  overflow-y: auto;
 `;
 
 const PageList: React.FC = () => {
