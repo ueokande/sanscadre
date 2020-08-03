@@ -8,6 +8,7 @@ import KeyHandler from "./KeyHandler";
 import VerticalSplit from "./VerticalSplit";
 import UIContext from "./UIContext";
 import UIReducer from "./UIReducer";
+import ResizeHint from "./ResizeHint";
 import TitleBar from "./TitleBar";
 import SidebarKnob from "./SidebarKnob";
 import PDFReader from "./PDFReader";
@@ -87,6 +88,23 @@ const App = () => {
     });
   };
 
+  const [hideHintTimer, setHideHintTimer] = React.useState<number>();
+  const [hintWidth, setHintWidth] = React.useState(-1);
+  const [hintHeight, setHintHeight] = React.useState(-1);
+  const [hintShown, setHintShown] = React.useState(false);
+
+  const updateResizeHint = (width: number, height: number) => {
+    setHintWidth(width);
+    setHintHeight(height);
+    setHintShown(true);
+
+    clearTimeout(hideHintTimer);
+    const timer = setTimeout(() => {
+      setHintShown(false);
+    }, 500);
+    setHideHintTimer(timer);
+  };
+
   const currentPage = appState.pages[appState.active];
 
   return (
@@ -100,13 +118,20 @@ const App = () => {
         >
           <VerticalSplit
             left={<PageList />}
-            right={<Screen src={currentPage?.src} type={currentPage?.type} />}
+            right={
+              <Screen
+                src={currentPage?.src}
+                type={currentPage?.type}
+                onResize={updateResizeHint}
+              />
+            }
             leftShown={uiState.showSidebar}
             leftWidth={uiState.sidebarWidth}
             minLeftWidth={80}
             onResized={handleSidebarResized}
           />
           <SidebarKnob shown={showKnob} onClick={handleKnobClicked} />
+          <ResizeHint shown={hintShown} width={hintWidth} height={hintHeight} />
           <TitleBar shown={showTitleBar} text={"Sanscadre"} />
         </Container>
         <KeyHandler target={window.document.documentElement} />
