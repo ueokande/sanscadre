@@ -12,6 +12,7 @@ const Container = styled.ul`
   background-color: #eee;
   min-height: 100%;
   height: 100%;
+  overflow-y: auto;
 `;
 
 const PageList: React.FC = () => {
@@ -46,7 +47,11 @@ const PageList: React.FC = () => {
     <Container>
       <Sortable onSortEnd={sortItems}>
         {appState.pages.map((page, index) => (
-          <div key={index} onMouseDown={(e) => select(e, index)}>
+          <div
+            ref={index === appState.active ? activeItem : null}
+            key={index}
+            onMouseDown={(e) => select(e, index)}
+          >
             <PageListItem
               index={index}
               active={index === appState.active}
