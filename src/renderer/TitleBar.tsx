@@ -11,7 +11,6 @@ const Container = styled.div<{ shown: boolean }>`
   top: 0;
   width: 100%;
   line-height: 20px;
-  font-family: system-ui;
   font-size: 13px;
   text-align: center;
   color: #eee;

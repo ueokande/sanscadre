@@ -17,7 +17,7 @@ const LeftContainer = styled.div<{
   transition-duration: ${({ width, minWidth }) =>
     width <= minWidth ? "0.1s" : "0"};
   overflow-x: hidden;
-  overflow-y: auto;
+  height: 100%;
   max-width: ${({ width }) => width + "px"};
   min-width: ${({ width }) => width + "px"};
 `;
@@ -26,6 +26,7 @@ const RightContainer = styled.div`
 `;
 const LeftContainerInner = styled.div<{ minWidth: number }>`
   min-width: ${({ minWidth }) => minWidth + "px"};
+  height: 100%;
 `;
 
 const Splitter = styled.div<{ shown: boolean }>`

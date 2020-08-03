@@ -21,7 +21,6 @@ const Container = styled.li<{ active: boolean; selected: boolean }>`
 `;
 
 const PageNumber = styled.span`
-  font-family: system-ui;
   font-weight: bold;
   margin-right: 0.2rem;
 `;
