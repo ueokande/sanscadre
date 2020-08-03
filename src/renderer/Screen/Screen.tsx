@@ -1,5 +1,4 @@
 import React from "react";
-import AppContext from "../AppContext";
 import styled from "styled-components";
 import DropArea from "./DropArea";
 
@@ -24,18 +23,20 @@ const Video = styled.video`
   object-fit: contain;
 `;
 
-const Screen = () => {
-  const { state } = React.useContext(AppContext);
+interface Props {
+  src?: string;
+  type?: string;
+}
 
+const Screen: React.FC<Props> = ({ src, type }) => {
   const content = (() => {
-    const page = state.pages[state.active];
-    if (!page) {
+    if (!src) {
       return <DropArea />;
     }
-    if (page.type.startsWith("image/")) {
-      return <Img src={page.src} />;
-    } else if (page.type.startsWith("video/")) {
-      return <Video src={page.src} autoPlay loop />;
+    if (type?.startsWith("image/")) {
+      return <Img src={src} />;
+    } else if (type?.startsWith("video/")) {
+      return <Video src={src} autoPlay loop />;
     }
     return null;
   })();

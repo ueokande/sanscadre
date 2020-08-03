@@ -87,6 +87,8 @@ const App = () => {
     });
   };
 
+  const currentPage = appState.pages[appState.active];
+
   return (
     <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
@@ -98,7 +100,7 @@ const App = () => {
         >
           <VerticalSplit
             left={<PageList />}
-            right={<Screen />}
+            right={<Screen src={currentPage?.src} type={currentPage?.type} />}
             leftShown={uiState.showSidebar}
             leftWidth={uiState.sidebarWidth}
             minLeftWidth={80}

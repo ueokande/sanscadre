@@ -113,7 +113,7 @@ class Sortable extends React.Component<Props, State> {
       return;
     }
     if (!this.state.dragging) {
-      return
+      return;
     }
 
     let insertBefore = -1;
@@ -142,7 +142,7 @@ class Sortable extends React.Component<Props, State> {
 
   private dragEnd() {
     if (!this.state.dragging) {
-      return
+      return;
     }
     this.setState({
       dragging: false,
