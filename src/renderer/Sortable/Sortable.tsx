@@ -112,6 +112,9 @@ class Sortable extends React.Component<Props, State> {
     if (this.props.children === null || this.container.current == null) {
       return;
     }
+    if (!this.state.dragging) {
+      return
+    }
 
     let insertBefore = -1;
     const parentRect = this.container.current.getBoundingClientRect();
@@ -138,6 +141,9 @@ class Sortable extends React.Component<Props, State> {
   }
 
   private dragEnd() {
+    if (!this.state.dragging) {
+      return
+    }
     this.setState({
       dragging: false,
     });
