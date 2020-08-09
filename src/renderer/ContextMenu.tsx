@@ -1,31 +1,41 @@
 import React from "react";
 import { remote } from "electron";
 import AppContext from "./AppContext";
+import * as ipc from "./ipc";
 
-const { Menu, MenuItem } = remote;
+const { Menu } = remote;
 
 const ContextMenu = () => {
   const { state, dispatch } = React.useContext(AppContext);
   const menu = React.useRef(new Menu());
 
   React.useEffect(() => {
-    const newMenu = new Menu();
-    newMenu.append(
-      new MenuItem({
+    menu.current = Menu.buildFromTemplate([
+      {
         label: "Next",
         click: () => dispatch({ type: "NEXT_PAGE" }),
         enabled:
           state.pages.length > 0 && state.active !== state.pages.length - 1,
-      })
-    );
-    newMenu.append(
-      new MenuItem({
+      },
+      {
         label: "Previous",
         click: () => dispatch({ type: "PREV_PAGE" }),
         enabled: state.pages.length > 0 && state.active !== 0,
-      })
-    );
-    menu.current = newMenu;
+      },
+      {
+        label: "Resize",
+        submenu: [
+          {
+            label: "Standard (4:3)",
+            click: () => ipc.resize("4:3"),
+          },
+          {
+            label: "Widescreen (16:9)",
+            click: () => ipc.resize("16:9"),
+          },
+        ],
+      },
+    ]);
   }, [state]);
 
   const handleContextMenu = React.useCallback((e: Event) => {

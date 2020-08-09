@@ -92,3 +92,21 @@ ipcMain.handle("save-temp-file", async (event, content, suffix) => {
   await fs.promises.writeFile(p, content);
   return p;
 });
+
+ipcMain.handle("resize", async (event, ratio: "16:9" | "4:3") => {
+  if (mainWindow === null) {
+    return;
+  }
+  let [width, height] = mainWindow.getSize();
+  switch (ratio) {
+    case "16:9":
+      height = width / (16 / 9);
+      break;
+    case "4:3":
+      height = width / (4 / 3);
+      break;
+    default:
+      throw new Error("unexpected ratio: " + ratio);
+  }
+  mainWindow.setSize(width, height, true);
+});

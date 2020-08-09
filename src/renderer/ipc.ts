@@ -6,3 +6,7 @@ export const saveTempFile = async (
 ): Promise<string> => {
   return await ipcRenderer.invoke("save-temp-file", content, suffix);
 };
+
+export const resize = async (ratio: "16:9" | "4:3"): Promise<void> => {
+  return await ipcRenderer.invoke("resize", ratio);
+};
