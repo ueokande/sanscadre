@@ -23,7 +23,10 @@
   },
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-console": "error"
+    "no-console": "error",
+    "prefer-const": ["error", {
+        "destructuring": "all"
+    }]
   },
   "overrides": [
     {
