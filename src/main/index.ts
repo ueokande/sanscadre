@@ -1,13 +1,39 @@
-import { app, protocol, BrowserWindow, ipcMain, nativeImage } from "electron";
+import {
+  app,
+  protocol,
+  BrowserWindow,
+  ipcMain,
+  nativeImage,
+  Menu,
+} from "electron";
 import path from "path";
 import fs from "fs";
 import { format as formatUrl } from "url";
 import TempDir from "./TempDir";
+import { create as createMenu } from "./menu";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 let mainWindow: BrowserWindow | null;
 const tempdir = TempDir.create();
+
+const resize = (ratio: "16:9" | "4:3") => {
+  if (mainWindow === null) {
+    return;
+  }
+  let [width, height] = mainWindow.getSize();
+  switch (ratio) {
+    case "16:9":
+      height = width / (16 / 9);
+      break;
+    case "4:3":
+      height = width / (4 / 3);
+      break;
+    default:
+      throw new Error("unexpected ratio: " + ratio);
+  }
+  mainWindow.setSize(width, height, true);
+};
 
 function createMainWindow() {
   const image = nativeImage.createFromPath(
@@ -19,6 +45,11 @@ function createMainWindow() {
     })()
   );
   image.setTemplateImage(true);
+
+  const menu = createMenu({
+    onResize: (ratio: "4:3" | "16:9") => resize(ratio),
+  });
+  Menu.setApplicationMenu(menu);
 
   const window = new BrowserWindow({
     webPreferences: {
@@ -94,19 +125,5 @@ ipcMain.handle("save-temp-file", async (event, content, suffix) => {
 });
 
 ipcMain.handle("resize", async (event, ratio: "16:9" | "4:3") => {
-  if (mainWindow === null) {
-    return;
-  }
-  let [width, height] = mainWindow.getSize();
-  switch (ratio) {
-    case "16:9":
-      height = width / (16 / 9);
-      break;
-    case "4:3":
-      height = width / (4 / 3);
-      break;
-    default:
-      throw new Error("unexpected ratio: " + ratio);
-  }
-  mainWindow.setSize(width, height, true);
+  resize(ratio);
 });
