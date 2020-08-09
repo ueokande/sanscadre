@@ -12,6 +12,7 @@ import ResizeHint from "./ResizeHint";
 import TitleBar from "./TitleBar";
 import SidebarKnob from "./SidebarKnob";
 import PDFReader from "./PDFReader";
+import ContextMenu from "./ContextMenu";
 import * as ipc from "./ipc";
 
 const Container = styled.div`
@@ -110,6 +111,7 @@ const App = () => {
   return (
     <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
+        <ContextMenu />
         <Container
           onMouseEnter={showSidebarKnob}
           onMouseLeave={hideSidebarKnob}

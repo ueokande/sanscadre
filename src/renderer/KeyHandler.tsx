@@ -7,11 +7,7 @@ interface Props {
 }
 
 const KeyHandler: React.FC<Props> = ({ target }) => {
-  const { state, dispatch } = React.useContext(AppContext);
-  const stateRef = React.useRef(state);
-  React.useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  const { dispatch } = React.useContext(AppContext);
 
   React.useEffect(() => {
     target.addEventListener("keydown", (e) => {
