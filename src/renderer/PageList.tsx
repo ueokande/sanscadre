@@ -16,9 +16,8 @@ const Container = styled.ul`
 `;
 
 const PageList: React.FC = () => {
-  const { state: appState, dispatch: appDispatch } = React.useContext(
-    AppContext
-  );
+  const { state: appState, dispatch: appDispatch } =
+    React.useContext(AppContext);
   const select = (e: React.MouseEvent, index: number) => {
     if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
       appDispatch({ type: "TOGGLE_SELECTED", index });
