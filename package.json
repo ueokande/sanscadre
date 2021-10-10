@@ -49,7 +49,7 @@
     "pdfjs-dist": "^2.4.456",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
-    "react-dev-utils": "^10.2.1",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^16.13.1",
     "styled-components": "^5.1.1",
     "ts-jest": "^26.1.3",
