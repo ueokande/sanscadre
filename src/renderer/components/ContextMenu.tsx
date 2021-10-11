@@ -1,7 +1,7 @@
 import React from "react";
 import { remote } from "electron";
-import AppContext from "./AppContext";
-import * as ipc from "./ipc";
+import AppContext from "../AppContext";
+import * as ipc from "../ipc";
 
 const { Menu } = remote;
 

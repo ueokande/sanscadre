@@ -2,17 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import AppContext from "./AppContext";
 import AppReducer from "./AppReducer";
-import Screen from "./Screen";
-import PageList from "./PageList";
-import KeyHandler from "./KeyHandler";
-import VerticalSplit from "./VerticalSplit";
+import Screen from "./components/Screen";
+import PageList from "./components/PageList";
+import KeyHandler from "./components/KeyHandler";
+import VerticalSplit from "./components/VerticalSplit";
 import UIContext from "./UIContext";
 import UIReducer from "./UIReducer";
-import ResizeHint from "./ResizeHint";
-import TitleBar from "./TitleBar";
-import SidebarKnob from "./SidebarKnob";
+import ResizeHint from "./components/ResizeHint";
+import TitleBar from "./components/TitleBar";
+import SidebarKnob from "./components/SidebarKnob";
 import PDFReader from "./PDFReader";
-import ContextMenu from "./ContextMenu";
+import ContextMenu from "./components/ContextMenu";
 import * as ipc from "./ipc";
 
 const Container = styled.div`

@@ -1,6 +1,6 @@
 import React from "react";
-import AppContext from "./AppContext";
-import { isMac } from "./platform";
+import AppContext from "../AppContext";
+import { isMac } from "../platform";
 
 interface Props {
   target: HTMLElement;

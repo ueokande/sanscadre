@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import AppContext from "./AppContext";
+import AppContext from "../AppContext";
 import PageListItem from "./PageListItem";
-import { isMac } from "./platform";
+import { isMac } from "../platform";
 import Sortable from "./Sortable";
 
 const Container = styled.ul`
