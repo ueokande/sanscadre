@@ -7,15 +7,12 @@ import {
   Menu,
 } from "electron";
 import path from "path";
-import fs from "fs";
 import { format as formatUrl } from "url";
-import TempDir from "./TempDir";
 import { create as createMenu } from "./menu";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 let mainWindow: BrowserWindow | null;
-const tempdir = TempDir.create();
 
 const resize = (ratio: "16:9" | "4:3") => {
   if (mainWindow === null) {
@@ -107,21 +104,11 @@ app.on("ready", () => {
   mainWindow = createMainWindow();
 });
 
-app.on("will-quit", () => {
-  tempdir.cleanup();
-});
-
 app.whenReady().then(() => {
   protocol.registerFileProtocol("file", (request, callback) => {
     const pathname = decodeURI(request.url.replace("file:///", ""));
     callback(pathname);
   });
-});
-
-ipcMain.handle("save-temp-file", async (event, content, suffix) => {
-  const p = tempdir.createPath(suffix);
-  await fs.promises.writeFile(p, content);
-  return p;
 });
 
 ipcMain.handle("resize", async (event, ratio: "16:9" | "4:3") => {

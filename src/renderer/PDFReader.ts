@@ -45,7 +45,7 @@ export class PDFPage {
       | {
           scale: number;
         }
-  ): Promise<Buffer> {
+  ): Promise<string> {
     let viewport = this.page.getViewport({ scale: 1 });
     const rate = viewport.width / viewport.height;
 
@@ -72,18 +72,18 @@ export class PDFPage {
       viewport: viewport,
     }).promise;
 
-    const content = await new Promise((resolve, reject) => {
+    const blob: Blob = await new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
         if (blob === null) {
           return reject(new Error("unable to convert the page to a PNG"));
         }
-        resolve(blob.arrayBuffer());
+        resolve(blob);
       }, "image/png");
     });
 
     canvas.remove();
 
-    return Buffer.from(content as ArrayBuffer);
+    return window.URL.createObjectURL(blob);
   }
 
   get pageNumber(): number {

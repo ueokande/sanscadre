@@ -13,7 +13,6 @@ import TitleBar from "./components/TitleBar";
 import SidebarKnob from "./components/SidebarKnob";
 import PDFReader from "./PDFReader";
 import ContextMenu from "./components/ContextMenu";
-import * as ipc from "./ipc";
 
 const Container = styled.div`
   width: 100%;
@@ -76,11 +75,10 @@ const App = () => {
         (async () => {
           const pdf = await PDFReader.loadURL(`file://${file.path}`);
           pdf.eachPage(async (page) => {
-            const png = await page.getPNG({ width: 1920 });
-            const p = await ipc.saveTempFile(png, ".png");
+            const src = await page.getPNG({ width: 1920 });
             appDispatch({
               type: "APPEND_PAGE",
-              src: `file://${p}`,
+              src,
               contentType: "image/png",
             });
           });
