@@ -29,56 +29,45 @@ interface Props {
   onResize?: (width: number, height: number) => void;
 }
 
-class Screen extends React.Component<Props> {
-  private container = React.createRef<HTMLDivElement>();
+const Screen: React.FC<Props> = ({ src, type, onResize }) => {
+  const container = React.createRef<HTMLDivElement>();
 
-  private observer: ResizeObserver;
-
-  constructor(props: Props) {
-    super(props);
-
-    this.observer = new ResizeObserver((entities) => {
+  const observer = React.useMemo(() => {
+    return new ResizeObserver((entities) => {
       for (const entity of entities) {
-        this.props.onResize &&
-          this.props.onResize(
-            entity.contentRect.width,
-            entity.contentRect.height
-          );
+        onResize &&
+          onResize(entity.contentRect.width, entity.contentRect.height);
         break;
       }
     });
-  }
+  }, []);
 
-  componentDidMount() {
-    if (this.container.current === null) {
+  React.useEffect(() => {
+    if (container.current === null) {
       return;
     }
+    observer.observe(container.current, { box: "border-box" });
 
-    this.observer.observe(this.container.current, { box: "border-box" });
-  }
+    return () => {
+      if (container.current === null) {
+        return;
+      }
+      observer.unobserve(container.current);
+    };
+  }, [onResize, container]);
 
-  componentWillUnmount() {
-    if (this.container.current === null) {
-      return;
+  const content = (() => {
+    if (!src) {
+      return <DropArea />;
     }
-
-    this.observer.unobserve(this.container.current);
-  }
-
-  render() {
-    const content = (() => {
-      if (!this.props.src) {
-        return <DropArea />;
-      }
-      if (this.props.type?.startsWith("image/")) {
-        return <Img src={this.props.src} />;
-      } else if (this.props.type?.startsWith("video/")) {
-        return <Video src={this.props.src} autoPlay loop />;
-      }
-      return null;
-    })();
-    return <Container ref={this.container}>{content}</Container>;
-  }
-}
+    if (type?.startsWith("image/")) {
+      return <Img src={src} />;
+    } else if (type?.startsWith("video/")) {
+      return <Video src={src} autoPlay loop />;
+    }
+    return null;
+  })();
+  return <Container ref={container}>{content}</Container>;
+};
 
 export default Screen;
