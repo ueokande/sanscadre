@@ -16,8 +16,11 @@ const Container = styled.ul`
 `;
 
 const PageList: React.FC = () => {
-  const { state: appState, dispatch: appDispatch } =
-    React.useContext(AppContext);
+  const {
+    state: appState,
+    dispatch: appDispatch,
+    documentClient,
+  } = React.useContext(AppContext);
   const select = (e: React.MouseEvent, index: number) => {
     if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
       appDispatch({ type: "TOGGLE_SELECTED", index });
@@ -36,27 +39,24 @@ const PageList: React.FC = () => {
   }, [appState]);
 
   const sortItems = (index: number, insertBefore: number) => {
-    appDispatch({
-      type: "MOVE_PAGE",
-      insertBefore: insertBefore,
-    });
+    const pageId = appState.pages[index];
+    documentClient?.movePage(pageId, insertBefore);
   };
 
   return (
     <Container>
       <Sortable onSortEnd={sortItems}>
-        {appState.pages.map((page, index) => (
+        {appState.pages.map((id, index) => (
           <div
             ref={index === appState.active ? activeItem : null}
-            key={index}
+            key={id}
             onMouseDown={(e) => select(e, index)}
           >
             <PageListItem
               index={index}
               active={index === appState.active}
               selected={appState.selected.has(index)}
-              src={page.src}
-              type={page.type}
+              id={id}
             />
           </div>
         ))}

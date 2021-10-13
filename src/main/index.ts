@@ -9,6 +9,11 @@ import {
 import path from "path";
 import { format as formatUrl } from "url";
 import { create as createMenu } from "./menu";
+import Router from "./router";
+import DocumentUseCase from "./usecases/DocumentUseCase";
+import { DocumentRepositoryImpl } from "./repositories/DocumentRepository";
+import { DocumentNotifierImpl } from "./notifiers/DocumentNotifier";
+import { PageRepositoryImpl } from "./repositories/PageRepository";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -97,11 +102,35 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   if (mainWindow === null) {
     mainWindow = createMainWindow();
+
+    const documentRepository = new DocumentRepositoryImpl();
+    const documentNotifier = new DocumentNotifierImpl(mainWindow.webContents);
+    const pageRepository = new PageRepositoryImpl();
+    const documentUseCase = new DocumentUseCase(
+      pageRepository,
+      documentRepository,
+      documentNotifier
+    );
+    const router = new Router(documentUseCase);
+
+    router.run();
   }
 });
 
 app.on("ready", () => {
   mainWindow = createMainWindow();
+
+  const documentRepository = new DocumentRepositoryImpl();
+  const documentNotifier = new DocumentNotifierImpl(mainWindow.webContents);
+  const pageRepository = new PageRepositoryImpl();
+  const documentUseCase = new DocumentUseCase(
+    pageRepository,
+    documentRepository,
+    documentNotifier
+  );
+  const router = new Router(documentUseCase);
+
+  router.run();
 });
 
 app.whenReady().then(() => {

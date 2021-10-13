@@ -1,12 +1,12 @@
 import React from "react";
+import AppContext from "../AppContext";
 import styled from "styled-components";
 
 interface Props {
   active: boolean;
   selected: boolean;
   index: number;
-  src: string;
-  type: string;
+  id: string;
 }
 
 const Container = styled.li<{ active: boolean; selected: boolean }>`
@@ -35,18 +35,25 @@ const Video = styled.video`
   box-shadow: 0 0 4px #222;
 `;
 
-const PageListItem: React.FC<Props> = ({
-  active,
-  selected,
-  index,
-  src,
-  type,
-}) => {
-  const content = (() => {
-    if (type.startsWith("image/")) {
-      return <Img src={src} />;
-    } else if (type.startsWith("video/")) {
-      return <Video src={src} />;
+type Content = {
+  src: string;
+  contentType: string;
+};
+
+const PageListItem: React.FC<Props> = ({ active, selected, index, id }) => {
+  const { documentClient } = React.useContext(AppContext);
+  const [content, setContent] = React.useState<Content | undefined>();
+  React.useEffect(() => {
+    documentClient?.getPageContent(id).then((page) => {
+      setContent(page);
+    });
+  }, [id]);
+
+  const inner = (() => {
+    if (content?.contentType.startsWith("image/")) {
+      return <Img src={content?.src} />;
+    } else if (content?.contentType.startsWith("video/")) {
+      return <Video src={content?.src} />;
     } else {
       return null;
     }
@@ -55,7 +62,7 @@ const PageListItem: React.FC<Props> = ({
   return (
     <Container active={active} selected={selected}>
       <PageNumber>{index + 1}</PageNumber>
-      {content}
+      {inner}
     </Container>
   );
 };

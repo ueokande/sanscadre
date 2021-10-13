@@ -13,6 +13,11 @@ import TitleBar from "./components/TitleBar";
 import SidebarKnob from "./components/SidebarKnob";
 import PDFReader from "./PDFReader";
 import ContextMenu from "./components/ContextMenu";
+import DocumentClient from "./clients/DocumentClient";
+import DocumentObserver from "./observers/DocumentObserver";
+
+const documentClient = new DocumentClient();
+const documentObserver = new DocumentObserver();
 
 const Container = styled.div`
   width: 100%;
@@ -66,21 +71,15 @@ const App = () => {
 
     Array.from(e.dataTransfer.files).forEach((file) => {
       if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
-        appDispatch({
-          type: "APPEND_PAGE",
-          src: `file://${file.path}`,
-          contentType: file.type,
-        });
+        (async () => {
+          await documentClient.append(`file://${file.path}`, file.type);
+        })();
       } else if (file.type === "application/pdf") {
         (async () => {
           const pdf = await PDFReader.loadURL(`file://${file.path}`);
           pdf.eachPage(async (page) => {
             const src = await page.getPNG({ width: 1920 });
-            appDispatch({
-              type: "APPEND_PAGE",
-              src,
-              contentType: "image/png",
-            });
+            await documentClient.append(src, "image/png");
           });
         })();
       }
@@ -104,10 +103,20 @@ const App = () => {
     setHideHintTimer(timer);
   };
 
-  const currentPage = appState.pages[appState.active];
+  React.useEffect(() => {
+    documentObserver.onPagesChanged((pageIds: string[]) => {
+      appDispatch({ type: "SET_PAGES", pageIds });
+    });
+  }, [documentObserver]);
 
   return (
-    <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
+    <AppContext.Provider
+      value={{
+        state: appState,
+        dispatch: appDispatch,
+        documentClient,
+      }}
+    >
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
         <ContextMenu />
         <Container
@@ -120,8 +129,7 @@ const App = () => {
             left={<PageList />}
             right={
               <Screen
-                src={currentPage?.src}
-                type={currentPage?.type}
+                id={appState.pages[appState.active]}
                 onResize={updateResizeHint}
               />
             }

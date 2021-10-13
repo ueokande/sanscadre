@@ -1,4 +1,5 @@
 import React from "react";
+import AppContext from "../../AppContext";
 import styled from "styled-components";
 import DropArea from "./DropArea";
 
@@ -24,14 +25,17 @@ const Video = styled.video`
 `;
 
 interface Props {
-  src?: string;
-  type?: string;
+  id?: string;
   onResize?: (width: number, height: number) => void;
 }
 
-const Screen: React.FC<Props> = ({ src, type, onResize }) => {
-  const container = React.createRef<HTMLDivElement>();
+type Content = {
+  src: string;
+  contentType: string;
+};
 
+const Screen: React.FC<Props> = ({ id, onResize }) => {
+  const container = React.createRef<HTMLDivElement>();
   const observer = React.useMemo(() => {
     return new ResizeObserver((entities) => {
       for (const entity of entities) {
@@ -41,6 +45,17 @@ const Screen: React.FC<Props> = ({ src, type, onResize }) => {
       }
     });
   }, []);
+
+  const { documentClient } = React.useContext(AppContext);
+  const [content, setContent] = React.useState<Content | undefined>();
+  React.useEffect(() => {
+    if (typeof id === "undefined") {
+      return id;
+    }
+    documentClient?.getPageContent(id).then((page) => {
+      setContent(page);
+    });
+  }, [id]);
 
   React.useEffect(() => {
     if (container.current === null) {
@@ -56,18 +71,18 @@ const Screen: React.FC<Props> = ({ src, type, onResize }) => {
     };
   }, [onResize, container]);
 
-  const content = (() => {
-    if (!src) {
+  const inner = (() => {
+    if (!id) {
       return <DropArea />;
     }
-    if (type?.startsWith("image/")) {
-      return <Img src={src} />;
-    } else if (type?.startsWith("video/")) {
-      return <Video src={src} autoPlay loop />;
+    if (content?.contentType?.startsWith("image/")) {
+      return <Img src={content.src} />;
+    } else if (content?.contentType?.startsWith("video/")) {
+      return <Video src={content.src} autoPlay loop />;
     }
     return null;
   })();
-  return <Container ref={container}>{content}</Container>;
+  return <Container ref={container}>{inner}</Container>;
 };
 
 export default Screen;

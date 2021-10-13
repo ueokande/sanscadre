@@ -7,10 +7,10 @@ interface Props {
 }
 
 const KeyHandler: React.FC<Props> = ({ target }) => {
-  const { dispatch } = React.useContext(AppContext);
+  const { state, dispatch, documentClient } = React.useContext(AppContext);
 
   React.useEffect(() => {
-    target.addEventListener("keydown", (e) => {
+    const f = (e: KeyboardEvent) => {
       switch (e.key) {
         case "ArrowUp":
         case "PageUp":
@@ -28,15 +28,22 @@ const KeyHandler: React.FC<Props> = ({ target }) => {
           return;
         case "Backspace":
         case "Delete":
-          dispatch({ type: "DELETE_SELECTED" });
+          documentClient?.remove(
+            Array.from(state.selected).map((i) => state.pages[i])
+          );
           return;
         case "a":
           if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
             dispatch({ type: "SELECT_ALL" });
           }
       }
-    });
-  }, [target]);
+    };
+    target.addEventListener("keydown", f);
+
+    return () => {
+      target.removeEventListener("keydown", f);
+    };
+  }, [target, state]);
 
   return null;
 };

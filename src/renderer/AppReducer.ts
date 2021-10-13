@@ -6,21 +6,14 @@ export type Action =
   | { type: "FIRST_PAGE" }
   | { type: "LAST_PAGE" }
   | { type: "JUMP_TO_PAGE"; index: number }
-  | { type: "APPEND_PAGE"; src: string; contentType: string }
-  | { type: "MOVE_PAGE"; insertBefore: number }
-  | { type: "DELETE_SELECTED" }
+  | { type: "SET_PAGES"; pageIds: string[] }
   | { type: "TOGGLE_SELECTED"; index: number }
   | { type: "SELECT_RANGE"; end: number }
   | { type: "SELECT_ALL" };
 
-type Page = {
-  src: string;
-  type: string;
-};
-
 export interface State {
   active: number;
-  pages: Array<Page>;
+  pages: Array<string>;
   selected: Set<number>;
 }
 
@@ -58,65 +51,12 @@ const AppReducer: React.Reducer<State, Action> = (state, action) => {
           Math.max(Math.min(action.index, state.pages.length - 1), 0),
         ]),
       };
-    case "APPEND_PAGE":
+    case "SET_PAGES":
       return {
         ...state,
-        pages: state.pages.concat([
-          { src: action.src, type: action.contentType },
-        ]),
-        active: state.pages.length,
-        selected: new Set([state.pages.length]),
-      };
-    case "MOVE_PAGE":
-      return {
-        ...state,
-        active: (() => {
-          if (state.active < action.insertBefore) {
-            return action.insertBefore - 1;
-          } else {
-            return action.insertBefore;
-          }
-        })(),
-        selected: (() => {
-          if (state.active < action.insertBefore) {
-            return new Set([action.insertBefore - 1]);
-          } else {
-            return new Set([action.insertBefore]);
-          }
-        })(),
-        pages: (() => {
-          const a = state.pages;
-          if (state.active < action.insertBefore) {
-            return a
-              .slice(0, state.active)
-              .concat(
-                a.slice(state.active + 1, action.insertBefore),
-                a[state.active],
-                a.slice(action.insertBefore)
-              );
-          } else {
-            return a
-              .slice(0, action.insertBefore)
-              .concat(
-                a[state.active],
-                a.slice(action.insertBefore, state.active),
-                a.slice(state.active + 1)
-              );
-          }
-          return a;
-        })(),
-      };
-    case "DELETE_SELECTED":
-      return {
-        ...state,
-        pages: state.pages.filter((p, i) => !state.selected.has(i)),
-        active: Math.min(
-          state.pages.length - state.selected.size - 1,
-          state.active
-        ),
-        selected: new Set([
-          Math.min(state.pages.length - state.selected.size - 1, state.active),
-        ]),
+        pages: action.pageIds,
+        active: Math.min(state.active, action.pageIds.length - 1),
+        selected: new Set([Math.min(state.active, action.pageIds.length - 1)]),
       };
     case "TOGGLE_SELECTED":
       return {
