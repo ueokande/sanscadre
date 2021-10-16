@@ -96,40 +96,7 @@ function createMainWindow() {
   return window;
 }
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-
-app.on("activate", () => {
-  if (mainWindow === null) {
-    mainWindow = createMainWindow();
-
-    const documentRepository = new DocumentRepositoryImpl();
-    const documentNotifier = new DocumentNotifierImpl(mainWindow.webContents);
-    const cursorRepository = new CursorRepositoryImpl();
-    const pageRepository = new PageRepositoryImpl();
-    const cursorNotifier = new CursorNotifierImpl(mainWindow.webContents);
-    const cursorUseCase = new CursorUseCase(
-      cursorRepository,
-      documentRepository,
-      cursorNotifier
-    );
-    const documentUseCase = new DocumentUseCase(
-      pageRepository,
-      documentRepository,
-      documentNotifier
-    );
-    const router = new Router(documentUseCase, cursorUseCase);
-
-    router.run();
-  }
-});
-
-app.on("ready", () => {
-  mainWindow = createMainWindow();
-
+function initApp(mainWindow: BrowserWindow) {
   const documentRepository = new DocumentRepositoryImpl();
   const documentNotifier = new DocumentNotifierImpl(mainWindow.webContents);
   const cursorRepository = new CursorRepositoryImpl();
@@ -148,6 +115,24 @@ app.on("ready", () => {
   const router = new Router(documentUseCase, cursorUseCase);
 
   router.run();
+}
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
+
+app.on("activate", () => {
+  if (mainWindow === null) {
+    mainWindow = createMainWindow();
+    initApp(mainWindow);
+  }
+});
+
+app.on("ready", () => {
+  mainWindow = createMainWindow();
+  initApp(mainWindow);
 });
 
 app.whenReady().then(() => {
