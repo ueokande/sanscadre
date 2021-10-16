@@ -33,6 +33,10 @@ export default class PageListUseCase {
     this.documentNotifier.notifyPageUpdated(newPageIds);
   }
 
+  getPageIds(): string[] {
+    return this.documentRepository.getIds();
+  }
+
   getContent(pageId: string): Page | undefined {
     return this.pageRepository.load(pageId);
   }

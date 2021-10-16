@@ -18,6 +18,10 @@ export default class DocumentClient {
     return this.invoke({ type: "move", pageId, insertBefore });
   }
 
+  getPageIds(): Promise<string[]> {
+    return this.invoke({ type: "getPageIds" });
+  }
+
   getPageContent(index: string): Promise<Page> {
     return this.invoke({ type: "get", index });
   }

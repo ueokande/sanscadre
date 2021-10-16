@@ -13,6 +13,8 @@ export default class Router {
           return this.documentUseCase.remove(msg.pageIds);
         case "move":
           return this.documentUseCase.movePage(msg.pageId, msg.insertBefore);
+        case "getPageIds":
+          return this.documentUseCase.getPageIds();
         case "get":
           return this.documentUseCase.getContent(msg.index);
       }

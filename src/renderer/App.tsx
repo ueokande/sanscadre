@@ -109,6 +109,13 @@ const App = () => {
     });
   }, [documentObserver]);
 
+  React.useEffect(() => {
+    (async () => {
+      const pageIds = await documentClient.getPageIds();
+      appDispatch({ type: "SET_PAGES", pageIds });
+    })();
+  }, [documentClient]);
+
   return (
     <AppContext.Provider
       value={{
