@@ -17,7 +17,7 @@ export default class CursorUseCase {
     const current = this.cursorRepository.get();
     const newIndex = Math.min(current + 1, total - 1);
     this.cursorRepository.set(newIndex);
-    this.cursorNotifier.notifyCurrentPageChanged(newIndex);
+    this.cursorNotifier.notifyCursorChanged(newIndex);
     return newIndex;
   }
 
@@ -29,13 +29,13 @@ export default class CursorUseCase {
     const current = this.cursorRepository.get();
     const newIndex = Math.max(current - 1, 0);
     this.cursorRepository.set(newIndex);
-    this.cursorNotifier.notifyCurrentPageChanged(newIndex);
+    this.cursorNotifier.notifyCursorChanged(newIndex);
     return newIndex;
   }
 
   goFirst(): number {
     this.cursorRepository.set(0);
-    this.cursorNotifier.notifyCurrentPageChanged(0);
+    this.cursorNotifier.notifyCursorChanged(0);
     return 0;
   }
 
@@ -43,13 +43,13 @@ export default class CursorUseCase {
     const total = this.documentRepository.getIds().length;
     const newIndex = total - 1;
     this.cursorRepository.set(newIndex);
-    this.cursorNotifier.notifyCurrentPageChanged(newIndex);
+    this.cursorNotifier.notifyCursorChanged(newIndex);
     return newIndex;
   }
 
   goAt(index: number): number {
     this.cursorRepository.set(index);
-    this.cursorNotifier.notifyCurrentPageChanged(index);
+    this.cursorNotifier.notifyCursorChanged(index);
     return index;
   }
 }

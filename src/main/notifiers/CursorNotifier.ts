@@ -1,13 +1,13 @@
 import { WebContents } from "electron";
 
 export default interface CursorNotifier {
-  notifyCurrentPageChanged(page: number): Promise<void>;
+  notifyCursorChanged(page: number): Promise<void>;
 }
 
 export class CursorNotifierImpl implements CursorNotifier {
   constructor(private readonly contents: WebContents) {}
 
-  async notifyCurrentPageChanged(page: number) {
+  async notifyCursorChanged(page: number) {
     await this.contents.postMessage("cursor-notification", {
       type: "on.cursor-changed",
       page,
