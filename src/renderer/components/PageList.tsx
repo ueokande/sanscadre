@@ -20,6 +20,7 @@ const PageList: React.FC = () => {
     state: appState,
     dispatch: appDispatch,
     documentClient,
+    cursorClient,
   } = React.useContext(AppContext);
   const select = (e: React.MouseEvent, index: number) => {
     if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
@@ -27,7 +28,7 @@ const PageList: React.FC = () => {
     } else if (e.shiftKey) {
       appDispatch({ type: "SELECT_RANGE", end: index });
     } else {
-      appDispatch({ type: "JUMP_TO_PAGE", index });
+      cursorClient?.goAt(index);
     }
   };
 

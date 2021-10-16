@@ -14,10 +14,14 @@ import SidebarKnob from "./components/SidebarKnob";
 import PDFReader from "./PDFReader";
 import ContextMenu from "./components/ContextMenu";
 import DocumentClient from "./clients/DocumentClient";
+import CursorClient from "./clients/CursorClient";
 import DocumentObserver from "./observers/DocumentObserver";
+import CursorObserver from "./observers/CursorObserver";
 
 const documentClient = new DocumentClient();
 const documentObserver = new DocumentObserver();
+const cursorClient = new CursorClient();
+const cursorObserver = new CursorObserver();
 
 const Container = styled.div`
   width: 100%;
@@ -110,6 +114,13 @@ const App = () => {
   }, [documentObserver]);
 
   React.useEffect(() => {
+    cursorObserver.onCurrentPageChanged((index: number) => {
+      appDispatch({ type: "SET_CURSOR", index });
+      appDispatch({ type: "SELECT_RANGE", begin: index, end: index });
+    });
+  }, [cursorClient]);
+
+  React.useEffect(() => {
     (async () => {
       const pageIds = await documentClient.getPageIds();
       appDispatch({ type: "SET_PAGES", pageIds });
@@ -122,6 +133,7 @@ const App = () => {
         state: appState,
         dispatch: appDispatch,
         documentClient,
+        cursorClient,
       }}
     >
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>

@@ -7,24 +7,25 @@ interface Props {
 }
 
 const KeyHandler: React.FC<Props> = ({ target }) => {
-  const { state, dispatch, documentClient } = React.useContext(AppContext);
+  const { state, dispatch, documentClient, cursorClient } =
+    React.useContext(AppContext);
 
   React.useEffect(() => {
     const f = (e: KeyboardEvent) => {
       switch (e.key) {
         case "ArrowUp":
         case "PageUp":
-          dispatch({ type: "PREV_PAGE" });
+          cursorClient?.goPrev();
           return;
         case "ArrowDown":
         case "PageDown":
-          dispatch({ type: "NEXT_PAGE" });
+          cursorClient?.goNext();
           return;
         case "Home":
-          dispatch({ type: "FIRST_PAGE" });
+          cursorClient?.goFirst();
           return;
         case "End":
-          dispatch({ type: "LAST_PAGE" });
+          cursorClient?.goLast();
           return;
         case "Backspace":
         case "Delete":
