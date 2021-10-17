@@ -126,6 +126,12 @@ const App = () => {
     })();
   }, [documentClient]);
 
+  React.useEffect(() => {
+    if (appState.active < 0) {
+      cursorClient?.goAt(0);
+    }
+  }, [appState.pages]);
+
   return (
     <AppContext.Provider
       value={{
