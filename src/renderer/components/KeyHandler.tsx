@@ -1,42 +1,50 @@
 import React from "react";
-import AppContext from "./AppContext";
-import { isMac } from "./platform";
+import AppContext from "../AppContext";
+import { isMac } from "../platform";
 
 interface Props {
   target: HTMLElement;
 }
 
 const KeyHandler: React.FC<Props> = ({ target }) => {
-  const { dispatch } = React.useContext(AppContext);
+  const { state, dispatch, documentClient, cursorClient } =
+    React.useContext(AppContext);
 
   React.useEffect(() => {
-    target.addEventListener("keydown", (e) => {
+    const f = (e: KeyboardEvent) => {
       switch (e.key) {
         case "ArrowUp":
         case "PageUp":
-          dispatch({ type: "PREV_PAGE" });
+          cursorClient?.goPrev();
           return;
         case "ArrowDown":
         case "PageDown":
-          dispatch({ type: "NEXT_PAGE" });
+          cursorClient?.goNext();
           return;
         case "Home":
-          dispatch({ type: "FIRST_PAGE" });
+          cursorClient?.goFirst();
           return;
         case "End":
-          dispatch({ type: "LAST_PAGE" });
+          cursorClient?.goLast();
           return;
         case "Backspace":
         case "Delete":
-          dispatch({ type: "DELETE_SELECTED" });
+          documentClient?.remove(
+            Array.from(state.selected).map((i) => state.pages[i])
+          );
           return;
         case "a":
           if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
             dispatch({ type: "SELECT_ALL" });
           }
       }
-    });
-  }, [target]);
+    };
+    target.addEventListener("keydown", f);
+
+    return () => {
+      target.removeEventListener("keydown", f);
+    };
+  }, [target, state]);
 
   return null;
 };

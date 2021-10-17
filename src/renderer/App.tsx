@@ -2,18 +2,25 @@ import React from "react";
 import styled from "styled-components";
 import AppContext from "./AppContext";
 import AppReducer from "./AppReducer";
-import Screen from "./Screen";
-import PageList from "./PageList";
-import KeyHandler from "./KeyHandler";
-import VerticalSplit from "./VerticalSplit";
+import Screen from "./components/Screen";
+import PageList from "./components/PageList";
+import KeyHandler from "./components/KeyHandler";
+import VerticalSplit from "./components/VerticalSplit";
 import UIContext from "./UIContext";
 import UIReducer from "./UIReducer";
-import ResizeHint from "./ResizeHint";
-import TitleBar from "./TitleBar";
-import SidebarKnob from "./SidebarKnob";
+import ResizeHint from "./components/ResizeHint";
+import TitleBar from "./components/TitleBar";
+import SidebarKnob from "./components/SidebarKnob";
 import PDFReader from "./PDFReader";
-import ContextMenu from "./ContextMenu";
-import * as ipc from "./ipc";
+import DocumentClient from "./clients/DocumentClient";
+import CursorClient from "./clients/CursorClient";
+import DocumentObserver from "./observers/DocumentObserver";
+import CursorObserver from "./observers/CursorObserver";
+
+const documentClient = new DocumentClient();
+const documentObserver = new DocumentObserver();
+const cursorClient = new CursorClient();
+const cursorObserver = new CursorObserver();
 
 const Container = styled.div`
   width: 100%;
@@ -67,22 +74,15 @@ const App = () => {
 
     Array.from(e.dataTransfer.files).forEach((file) => {
       if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
-        appDispatch({
-          type: "APPEND_PAGE",
-          src: `file://${file.path}`,
-          contentType: file.type,
-        });
+        (async () => {
+          await documentClient.append(`file://${file.path}`, file.type);
+        })();
       } else if (file.type === "application/pdf") {
         (async () => {
           const pdf = await PDFReader.loadURL(`file://${file.path}`);
           pdf.eachPage(async (page) => {
-            const png = await page.getPNG({ width: 1920 });
-            const p = await ipc.saveTempFile(png, ".png");
-            appDispatch({
-              type: "APPEND_PAGE",
-              src: `file://${p}`,
-              contentType: "image/png",
-            });
+            const src = await page.getPNG({ width: 1920 });
+            await documentClient.append(src, "image/png");
           });
         })();
       }
@@ -106,12 +106,42 @@ const App = () => {
     setHideHintTimer(timer);
   };
 
-  const currentPage = appState.pages[appState.active];
+  React.useEffect(() => {
+    documentObserver.onPagesChanged((pageIds: string[]) => {
+      appDispatch({ type: "SET_PAGES", pageIds });
+    });
+  }, [documentObserver]);
+
+  React.useEffect(() => {
+    cursorObserver.onCurrentPageChanged((index: number) => {
+      appDispatch({ type: "SET_CURSOR", index });
+      appDispatch({ type: "SELECT_RANGE", begin: index, end: index });
+    });
+  }, [cursorClient]);
+
+  React.useEffect(() => {
+    (async () => {
+      const pageIds = await documentClient.getPageIds();
+      appDispatch({ type: "SET_PAGES", pageIds });
+    })();
+  }, [documentClient]);
+
+  React.useEffect(() => {
+    if (appState.active < 0) {
+      cursorClient?.goAt(0);
+    }
+  }, [appState.pages]);
 
   return (
-    <AppContext.Provider value={{ state: appState, dispatch: appDispatch }}>
+    <AppContext.Provider
+      value={{
+        state: appState,
+        dispatch: appDispatch,
+        documentClient,
+        cursorClient,
+      }}
+    >
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
-        <ContextMenu />
         <Container
           onMouseEnter={showSidebarKnob}
           onMouseLeave={hideSidebarKnob}
@@ -122,8 +152,7 @@ const App = () => {
             left={<PageList />}
             right={
               <Screen
-                src={currentPage?.src}
-                type={currentPage?.type}
+                id={appState.pages[appState.active]}
                 onResize={updateResizeHint}
               />
             }
