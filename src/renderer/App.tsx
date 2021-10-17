@@ -12,7 +12,6 @@ import ResizeHint from "./components/ResizeHint";
 import TitleBar from "./components/TitleBar";
 import SidebarKnob from "./components/SidebarKnob";
 import PDFReader from "./PDFReader";
-import ContextMenu from "./components/ContextMenu";
 import DocumentClient from "./clients/DocumentClient";
 import CursorClient from "./clients/CursorClient";
 import DocumentObserver from "./observers/DocumentObserver";
@@ -137,7 +136,6 @@ const App = () => {
       }}
     >
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>
-        <ContextMenu />
         <Container
           onMouseEnter={showSidebarKnob}
           onMouseLeave={hideSidebarKnob}

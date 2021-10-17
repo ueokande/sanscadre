@@ -52,4 +52,15 @@ export default class CursorUseCase {
     this.cursorNotifier.notifyCursorChanged(index);
     return index;
   }
+
+  hasNextPage(): boolean {
+    const total = this.documentRepository.getIds().length;
+    const current = this.cursorRepository.get();
+    return current < total - 1;
+  }
+
+  hasPrevPage(): boolean {
+    const current = this.cursorRepository.get();
+    return 0 < current;
+  }
 }

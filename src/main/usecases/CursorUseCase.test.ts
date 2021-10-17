@@ -106,7 +106,7 @@ describe("CursorUseCase", () => {
   });
 
   describe("#goFirst", () => {
-    test("jumps to a first page", () => {
+    it("jumps to a first page", () => {
       jest.spyOn(cursorRepository, "get").mockReturnValue(3);
 
       const returned = sut.goFirst();
@@ -116,7 +116,7 @@ describe("CursorUseCase", () => {
     });
   });
   describe("#goLast", () => {
-    test("jumps to a last page", () => {
+    it("jumps to a last page", () => {
       jest.spyOn(cursorRepository, "get").mockReturnValue(3);
 
       const returned = sut.goLast();
@@ -126,13 +126,45 @@ describe("CursorUseCase", () => {
     });
   });
   describe("#goAt", () => {
-    test("jumps to a specified page", () => {
+    it("jumps to a specified page", () => {
       jest.spyOn(cursorRepository, "get").mockReturnValue(3);
 
       const returned = sut.goAt(5);
       expect(returned).toEqual(5);
       expect(cursorRepositorySpy).toBeCalledWith(5);
       expect(cursorNotifierSpy).toBeCalledWith(5);
+    });
+  });
+
+  describe("#hasNextPage", () => {
+    it("returns true when is in the middle", () => {
+      jest.spyOn(cursorRepository, "get").mockReturnValue(3);
+
+      const b = sut.hasNextPage();
+      expect(b).toBeTruthy();
+    });
+
+    it("returns true when is at the last page", () => {
+      jest.spyOn(cursorRepository, "get").mockReturnValue(7);
+
+      const b = sut.hasNextPage();
+      expect(b).toBeFalsy();
+    });
+  });
+
+  describe("#hasPrevPage", () => {
+    it("returns true when is in the middle", () => {
+      jest.spyOn(cursorRepository, "get").mockReturnValue(3);
+
+      const b = sut.hasPrevPage();
+      expect(b).toBeTruthy();
+    });
+
+    it("returns true when is at the last page", () => {
+      jest.spyOn(cursorRepository, "get").mockReturnValue(0);
+
+      const b = sut.hasPrevPage();
+      expect(b).toBeFalsy();
     });
   });
 });
