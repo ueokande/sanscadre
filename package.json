@@ -51,7 +51,7 @@
     "normalize.css": "^8.0.1",
     "pdfjs-dist": "^2.4.456",
     "prettier": "^2.4.1",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-dev-utils": "^11.0.4",
     "react-dom": "^16.13.1",
     "styled-components": "^5.3.1",
