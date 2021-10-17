@@ -16,4 +16,8 @@ dmg:
 asar: false
 
 files:
-  - "build/*"
+  - filter:
+      - package.json
+      - build/*
+  - from: dist/main
+  - from: dist/renderer

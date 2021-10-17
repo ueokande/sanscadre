@@ -55,7 +55,7 @@ function createMainWindow() {
   const window = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
-      webSecurity: false,
+      contextIsolation: false,
     },
     frame: false,
     titleBarStyle: "customButtonsOnHover",
@@ -67,11 +67,24 @@ function createMainWindow() {
   }
 
   if (isDevelopment) {
-    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    window.loadURL(
+      formatUrl({
+        pathname: path.join(
+          __dirname,
+          "..",
+          "..",
+          "dist",
+          "renderer",
+          "renderer.html"
+        ),
+        protocol: "file",
+        slashes: true,
+      })
+    );
   } else {
     window.loadURL(
       formatUrl({
-        pathname: path.join(__dirname, "index.html"),
+        pathname: path.join(__dirname, "renderer.html"),
         protocol: "file",
         slashes: true,
       })
