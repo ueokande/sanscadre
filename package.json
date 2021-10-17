@@ -7,7 +7,7 @@
     "dev:webpack": "webpack --watch --mode development",
     "dev:electron": "NODE_ENV=development nodemon --watch dist/main --exec electron --trace-warnings dist/main/main.js",
     "build": "webpack --mode production",
-    "package": "electron-builder",
+    "package": "electron-builder --publish never",
     "lint": "eslint --ext '.js,.jsx,.ts,.tsx' src",
     "lint:fix": "eslint --fix --ext '.js,.jsx,.ts,.tsx' src",
     "test": "jest",
