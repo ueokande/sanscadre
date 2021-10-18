@@ -15,6 +15,7 @@ import { PageRepositoryImpl } from "./repositories/PageRepository";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 let mainWindow: BrowserWindow | null;
+let controllerWindow: BrowserWindow | null;
 let cursorUseCase: CursorUseCase;
 let documentUseCase: DocumentUseCase;
 
@@ -75,7 +76,7 @@ function createMainWindow() {
           "..",
           "dist",
           "renderer",
-          "renderer.html"
+          "renderer_screen.html"
         ),
         protocol: "file",
         slashes: true,
@@ -84,7 +85,7 @@ function createMainWindow() {
   } else {
     window.loadURL(
       formatUrl({
-        pathname: path.join(__dirname, "renderer.html"),
+        pathname: path.join(__dirname, "renderer_screen.html"),
         protocol: "file",
         slashes: true,
       })
@@ -112,6 +113,70 @@ function createMainWindow() {
       onResize: (ratio: "4:3" | "16:9") => resize(ratio),
     });
     contextMenu.popup();
+  });
+
+  return window;
+}
+
+function createControllerWindow(mainWindow: BrowserWindow) {
+  const image = nativeImage.createFromPath(
+    (() => {
+      if (isDevelopment) {
+        return path.join(__dirname, "..", "..", "build", "icon.png");
+      }
+      return path.join(__dirname, "build", "icon.png");
+    })()
+  );
+  image.setTemplateImage(true);
+
+  const window = new BrowserWindow({
+    parent: mainWindow,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+    frame: false,
+    icon: image,
+  });
+
+  if (isDevelopment) {
+    window.webContents.openDevTools();
+  }
+
+  if (isDevelopment) {
+    window.loadURL(
+      formatUrl({
+        pathname: path.join(
+          __dirname,
+          "..",
+          "..",
+          "dist",
+          "renderer",
+          "renderer_controller.html"
+        ),
+        protocol: "file",
+        slashes: true,
+      })
+    );
+  } else {
+    window.loadURL(
+      formatUrl({
+        pathname: path.join(__dirname, "renderer_controller.html"),
+        protocol: "file",
+        slashes: true,
+      })
+    );
+  }
+
+  window.on("closed", () => {
+    controllerWindow = null;
+  });
+
+  window.webContents.on("devtools-opened", () => {
+    window.focus();
+    setImmediate(() => {
+      window.focus();
+    });
   });
 
   return window;
@@ -147,12 +212,14 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   if (mainWindow === null) {
     mainWindow = createMainWindow();
+    controllerWindow = createControllerWindow(mainWindow);
     initApp(mainWindow);
   }
 });
 
 app.on("ready", () => {
   mainWindow = createMainWindow();
+  controllerWindow = createControllerWindow(mainWindow);
   initApp(mainWindow);
 });
 
