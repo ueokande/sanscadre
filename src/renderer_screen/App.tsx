@@ -12,15 +12,10 @@ import ResizeHint from "./components/ResizeHint";
 import TitleBar from "./components/TitleBar";
 import SidebarKnob from "./components/SidebarKnob";
 import PDFReader from "./PDFReader";
-import DocumentClient from "./clients/DocumentClient";
-import CursorClient from "./clients/CursorClient";
-import DocumentObserver from "./observers/DocumentObserver";
-import CursorObserver from "./observers/CursorObserver";
-
-const documentClient = new DocumentClient();
-const documentObserver = new DocumentObserver();
-const cursorClient = new CursorClient();
-const cursorObserver = new CursorObserver();
+import useCursorClient from "../renderer/hooks/useCursorClient";
+import useDocumentClient from "../renderer/hooks/useDocumentClient";
+import useCursorObserver from "../renderer/hooks/useCursorObserver";
+import useDocumentObserver from "../renderer/hooks/useDocumentObserver";
 
 const Container = styled.div`
   width: 100%;
@@ -68,6 +63,11 @@ const App = () => {
     e.preventDefault();
     e.stopPropagation();
   };
+
+  const documentClient = useDocumentClient();
+  const cursorClient = useCursorClient();
+  const documentObserver = useDocumentObserver();
+  const cursorObserver = useCursorObserver();
 
   const appendFile = (e: React.DragEvent) => {
     preventDefaults(e);
@@ -137,8 +137,6 @@ const App = () => {
       value={{
         state: appState,
         dispatch: appDispatch,
-        documentClient,
-        cursorClient,
       }}
     >
       <UIContext.Provider value={{ state: uiState, dispatch: uiDispatch }}>

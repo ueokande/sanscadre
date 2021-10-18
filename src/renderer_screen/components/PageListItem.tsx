@@ -1,6 +1,6 @@
 import React from "react";
-import AppContext from "../AppContext";
 import styled from "styled-components";
+import useDocumentClient from "../../renderer/hooks/useDocumentClient";
 
 interface Props {
   active: boolean;
@@ -41,7 +41,7 @@ type Content = {
 };
 
 const PageListItem: React.FC<Props> = ({ active, selected, index, id }) => {
-  const { documentClient } = React.useContext(AppContext);
+  const documentClient = useDocumentClient();
   const [content, setContent] = React.useState<Content | undefined>();
   React.useEffect(() => {
     documentClient?.getPageContent(id).then((page) => {

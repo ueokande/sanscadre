@@ -1,7 +1,7 @@
 import React from "react";
-import AppContext from "../../AppContext";
 import styled from "styled-components";
 import DropArea from "./DropArea";
+import useDocumentClient from "../../../renderer/hooks/useDocumentClient";
 
 const Container = styled.div`
   width: 100%;
@@ -46,7 +46,7 @@ const Screen: React.FC<Props> = ({ id, onResize }) => {
     });
   }, []);
 
-  const { documentClient } = React.useContext(AppContext);
+  const documentClient = useDocumentClient();
   const [content, setContent] = React.useState<Content | undefined>();
   React.useEffect(() => {
     if (typeof id === "undefined") {
