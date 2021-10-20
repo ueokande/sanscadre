@@ -1,26 +1,19 @@
-import { WebContents } from "electron";
+import WindowsProvider from "../WindowsProvider";
 
 export default interface CursorNotifier {
   notifyCursorChanged(page: number): Promise<void>;
 }
 
 export class CursorNotifierImpl implements CursorNotifier {
-  constructor(private readonly contents: WebContents) {}
+  constructor(private readonly windowsProvider: WindowsProvider) {}
 
   async notifyCursorChanged(page: number) {
-    await this.contents.postMessage("cursor-notification", {
-      type: "on.cursor-changed",
-      page,
+    const promises = this.windowsProvider.getWindows().map((w) => {
+      w.webContents.postMessage("cursor-notification", {
+        type: "on.cursor-changed",
+        page,
+      });
     });
-  }
-}
-
-export class CursorNotifierChain implements CursorNotifier {
-  constructor(private readonly notifiers: CursorNotifier[]) {}
-
-  async notifyCursorChanged(page: number) {
-    for (const n of this.notifiers) {
-      await n.notifyCursorChanged(page);
-    }
+    await Promise.allSettled(promises);
   }
 }

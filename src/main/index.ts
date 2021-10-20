@@ -7,19 +7,15 @@ import Router from "./router";
 import DocumentUseCase from "./usecases/DocumentUseCase";
 import CursorUseCase from "./usecases/CursorUseCase";
 import { DocumentRepositoryImpl } from "./repositories/DocumentRepository";
-import {
-  DocumentNotifierImpl,
-  DocumentNotifierChain,
-} from "./notifiers/DocumentNotifier";
+import { DocumentNotifierImpl } from "./notifiers/DocumentNotifier";
 import { CursorRepositoryImpl } from "./repositories/CursorRepository";
-import {
-  CursorNotifierImpl,
-  CursorNotifierChain,
-} from "./notifiers/CursorNotifier";
+import { CursorNotifierImpl } from "./notifiers/CursorNotifier";
 import { PageRepositoryImpl } from "./repositories/PageRepository";
+import WindowsProvider from "./WindowsProvider";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
+const windowsProvider = new WindowsProvider();
 let mainWindow: BrowserWindow | null;
 let controllerWindow: BrowserWindow | null;
 let cursorUseCase: CursorUseCase;
@@ -52,6 +48,7 @@ const showController = () => {
     controllerWindow.focus();
   } else {
     controllerWindow = createControllerWindow(mainWindow);
+    windowsProvider.add(controllerWindow);
   }
 };
 
@@ -110,6 +107,10 @@ function createMainWindow() {
       })
     );
   }
+
+  window.on("close", () => {
+    windowsProvider.remove(mainWindow!);
+  });
 
   window.on("closed", () => {
     mainWindow = null;
@@ -189,6 +190,10 @@ function createControllerWindow(mainWindow: BrowserWindow) {
     );
   }
 
+  window.on("close", () => {
+    windowsProvider.remove(controllerWindow!);
+  });
+
   window.on("closed", () => {
     controllerWindow = null;
   });
@@ -205,16 +210,10 @@ function createControllerWindow(mainWindow: BrowserWindow) {
 
 function initApp(mainWindow: BrowserWindow, controllerWindow: BrowserWindow) {
   const documentRepository = new DocumentRepositoryImpl();
-  const documentNotifier = new DocumentNotifierChain([
-    new DocumentNotifierImpl(mainWindow.webContents),
-    new DocumentNotifierImpl(controllerWindow.webContents),
-  ]);
+  const documentNotifier = new DocumentNotifierImpl(windowsProvider);
   const cursorRepository = new CursorRepositoryImpl();
   const pageRepository = new PageRepositoryImpl();
-  const cursorNotifier = new CursorNotifierChain([
-    new CursorNotifierImpl(mainWindow.webContents),
-    new CursorNotifierImpl(controllerWindow.webContents),
-  ]);
+  const cursorNotifier = new CursorNotifierImpl(windowsProvider);
   cursorUseCase = new CursorUseCase(
     cursorRepository,
     documentRepository,
@@ -240,6 +239,8 @@ app.on("activate", () => {
   if (mainWindow === null) {
     mainWindow = createMainWindow();
     controllerWindow = createControllerWindow(mainWindow);
+    windowsProvider.add(mainWindow);
+    windowsProvider.add(controllerWindow);
     initApp(mainWindow, controllerWindow);
   }
 });
@@ -247,6 +248,8 @@ app.on("activate", () => {
 app.on("ready", () => {
   mainWindow = createMainWindow();
   controllerWindow = createControllerWindow(mainWindow);
+  windowsProvider.add(mainWindow);
+  windowsProvider.add(controllerWindow);
   initApp(mainWindow, controllerWindow);
 });
 
