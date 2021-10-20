@@ -1,0 +1,21 @@
+html {
+  height: 100%;
+  font-family: system-ui;
+  -webkit-app-region: drag;
+}
+
+* {
+  overflow: hidden;
+  user-select: none;
+}
+
+body {
+  height: 100%;
+  background-color: #f8f8f8;
+}
+
+#app {
+  height: 100%;
+  overflow: hidden;
+}
+

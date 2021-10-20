@@ -14,3 +14,13 @@ export class CursorNotifierImpl implements CursorNotifier {
     });
   }
 }
+
+export class CursorNotifierChain implements CursorNotifier {
+  constructor(private readonly notifiers: CursorNotifier[]) {}
+
+  async notifyCursorChanged(page: number) {
+    for (const n of this.notifiers) {
+      await n.notifyCursorChanged(page);
+    }
+  }
+}

@@ -14,3 +14,13 @@ export class DocumentNotifierImpl implements DocumentNotifier {
     });
   }
 }
+
+export class DocumentNotifierChain implements DocumentNotifier {
+  constructor(private readonly notifiers: DocumentNotifier[]) {}
+
+  async notifyPageUpdated(pageIds: string[]): Promise<void> {
+    for (const n of this.notifiers) {
+      await n.notifyPageUpdated(pageIds);
+    }
+  }
+}

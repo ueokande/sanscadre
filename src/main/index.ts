@@ -7,9 +7,15 @@ import Router from "./router";
 import DocumentUseCase from "./usecases/DocumentUseCase";
 import CursorUseCase from "./usecases/CursorUseCase";
 import { DocumentRepositoryImpl } from "./repositories/DocumentRepository";
-import { DocumentNotifierImpl } from "./notifiers/DocumentNotifier";
+import {
+  DocumentNotifierImpl,
+  DocumentNotifierChain,
+} from "./notifiers/DocumentNotifier";
 import { CursorRepositoryImpl } from "./repositories/CursorRepository";
-import { CursorNotifierImpl } from "./notifiers/CursorNotifier";
+import {
+  CursorNotifierImpl,
+  CursorNotifierChain,
+} from "./notifiers/CursorNotifier";
 import { PageRepositoryImpl } from "./repositories/PageRepository";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -135,13 +141,13 @@ function createControllerWindow(mainWindow: BrowserWindow) {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    width: 400,
+    height: 150,
+    resizable: false,
     frame: false,
+    titleBarStyle: "customButtonsOnHover",
     icon: image,
   });
-
-  if (isDevelopment) {
-    window.webContents.openDevTools();
-  }
 
   if (isDevelopment) {
     window.loadURL(
@@ -182,12 +188,18 @@ function createControllerWindow(mainWindow: BrowserWindow) {
   return window;
 }
 
-function initApp(mainWindow: BrowserWindow) {
+function initApp(mainWindow: BrowserWindow, controllerWindow: BrowserWindow) {
   const documentRepository = new DocumentRepositoryImpl();
-  const documentNotifier = new DocumentNotifierImpl(mainWindow.webContents);
+  const documentNotifier = new DocumentNotifierChain([
+    new DocumentNotifierImpl(mainWindow.webContents),
+    new DocumentNotifierImpl(controllerWindow.webContents),
+  ]);
   const cursorRepository = new CursorRepositoryImpl();
   const pageRepository = new PageRepositoryImpl();
-  const cursorNotifier = new CursorNotifierImpl(mainWindow.webContents);
+  const cursorNotifier = new CursorNotifierChain([
+    new CursorNotifierImpl(mainWindow.webContents),
+    new CursorNotifierImpl(controllerWindow.webContents),
+  ]);
   cursorUseCase = new CursorUseCase(
     cursorRepository,
     documentRepository,
@@ -213,14 +225,14 @@ app.on("activate", () => {
   if (mainWindow === null) {
     mainWindow = createMainWindow();
     controllerWindow = createControllerWindow(mainWindow);
-    initApp(mainWindow);
+    initApp(mainWindow, controllerWindow);
   }
 });
 
 app.on("ready", () => {
   mainWindow = createMainWindow();
   controllerWindow = createControllerWindow(mainWindow);
-  initApp(mainWindow);
+  initApp(mainWindow, controllerWindow);
 });
 
 app.whenReady().then(() => {
