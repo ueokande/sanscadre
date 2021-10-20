@@ -6,6 +6,7 @@ interface Props {
   onNextPage: () => void;
   onPrevPage: () => void;
   onResize: (ratio: "4:3" | "16:9") => void;
+  onShowController: () => void;
 }
 
 const createTemplate = ({
@@ -14,6 +15,7 @@ const createTemplate = ({
   onNextPage,
   onPrevPage,
   onResize,
+  onShowController,
 }: Props): Array<Electron.MenuItemConstructorOptions> => [
   {
     label: "Next",
@@ -37,6 +39,10 @@ const createTemplate = ({
         click: () => onResize("16:9"),
       },
     ],
+  },
+  {
+    label: "Show Controller",
+    click: onShowController,
   },
 ];
 

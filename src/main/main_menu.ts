@@ -2,6 +2,7 @@ import { Menu, shell } from "electron";
 
 interface Props {
   onResize: (ratio: "4:3" | "16:9") => void;
+  onShowController: () => void;
 }
 
 const createTemplate = (
@@ -30,6 +31,10 @@ const createTemplate = (
               click: () => props.onResize("16:9"),
             },
           ],
+        },
+        {
+          label: "Show Controller",
+          click: () => props.onShowController(),
         },
         { type: "separator" },
         { role: "front" },

@@ -43,6 +43,18 @@ const resize = (ratio: "16:9" | "4:3") => {
   mainWindow.setSize(width, height, true);
 };
 
+const showController = () => {
+  if (mainWindow === null) {
+    return;
+  }
+
+  if (controllerWindow !== null) {
+    controllerWindow.focus();
+  } else {
+    controllerWindow = createControllerWindow(mainWindow);
+  }
+};
+
 function createMainWindow() {
   const image = nativeImage.createFromPath(
     (() => {
@@ -56,6 +68,7 @@ function createMainWindow() {
 
   const mainMenu = createMainMenu({
     onResize: (ratio: "4:3" | "16:9") => resize(ratio),
+    onShowController: showController,
   });
   Menu.setApplicationMenu(mainMenu);
 
@@ -100,6 +113,7 @@ function createMainWindow() {
 
   window.on("closed", () => {
     mainWindow = null;
+    controllerWindow?.close();
   });
 
   window.webContents.on("devtools-opened", () => {
@@ -117,6 +131,7 @@ function createMainWindow() {
       onNextPage: () => cursorUseCase?.goNext(),
       onPrevPage: () => cursorUseCase?.goPrev(),
       onResize: (ratio: "4:3" | "16:9") => resize(ratio),
+      onShowController: showController,
     });
     contextMenu.popup();
   });
