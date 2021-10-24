@@ -1,5 +1,5 @@
 {
-  "name": "sanscadre",
+  "name": "Sanscadre",
   "version": "0.2.0",
   "description": "Show your picture on a frameless window",
   "main": "main.js",
@@ -29,7 +29,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.13",
     "@types/jest": "^27.0.2",
-    "@types/react": "^16.9.43",
+    "@types/react": "^17.0.32",
     "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.1",
     "@types/uuid": "^8.3.1",
