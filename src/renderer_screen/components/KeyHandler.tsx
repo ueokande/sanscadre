@@ -1,14 +1,17 @@
 import React from "react";
 import AppContext from "../AppContext";
 import { isMac } from "../platform";
+import useDocumentClient from "../../renderer/hooks/useDocumentClient";
+import useCursorClient from "../../renderer/hooks/useCursorClient";
 
 interface Props {
   target: HTMLElement;
 }
 
 const KeyHandler: React.FC<Props> = ({ target }) => {
-  const { state, dispatch, documentClient, cursorClient } =
-    React.useContext(AppContext);
+  const documentClient = useDocumentClient();
+  const cursorClient = useCursorClient();
+  const { state, dispatch } = React.useContext(AppContext);
 
   React.useEffect(() => {
     const f = (e: KeyboardEvent) => {

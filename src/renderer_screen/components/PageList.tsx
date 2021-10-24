@@ -4,6 +4,8 @@ import AppContext from "../AppContext";
 import PageListItem from "./PageListItem";
 import { isMac } from "../platform";
 import Sortable from "./Sortable";
+import useDocumentClient from "../../renderer/hooks/useDocumentClient";
+import useCursorClient from "../../renderer/hooks/useCursorClient";
 
 const Container = styled.ul`
   padding: 0;
@@ -16,12 +18,11 @@ const Container = styled.ul`
 `;
 
 const PageList: React.FC = () => {
-  const {
-    state: appState,
-    dispatch: appDispatch,
-    documentClient,
-    cursorClient,
-  } = React.useContext(AppContext);
+  const documentClient = useDocumentClient();
+  const cursorClient = useCursorClient();
+
+  const { state: appState, dispatch: appDispatch } =
+    React.useContext(AppContext);
   const select = (e: React.MouseEvent, index: number) => {
     if ((isMac && e.metaKey) || (!isMac && e.ctrlKey)) {
       appDispatch({ type: "TOGGLE_SELECTED", index });
