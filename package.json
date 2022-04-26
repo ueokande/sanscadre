@@ -29,7 +29,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.13",
     "@types/jest": "^27.0.2",
-    "@types/react": "^16.9.43",
+    "@types/react": "^18.0.7",
     "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.1",
     "@types/uuid": "^8.3.1",
